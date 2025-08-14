@@ -110,7 +110,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>입고 처리중 :</string>
+        <string>입고 입력 개수 :</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_18">
@@ -118,12 +118,12 @@
         <rect>
          <x>190</x>
          <y>70</y>
-         <width>81</width>
+         <width>101</width>
          <height>19</height>
         </rect>
        </property>
        <property name="text">
-        <string>출고 처리중 :</string>
+        <string>출고 입력 개수 :</string>
        </property>
       </widget>
      </widget>
@@ -191,7 +191,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>B 구역 :</string>
+        <string>Y 구역 :</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_8">
@@ -243,7 +243,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>B 구역 :</string>
+        <string>Y 구역 :</string>
        </property>
       </widget>
      </widget>
@@ -340,7 +340,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>R 구역</string>
+        <string>G 구역</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_16">
@@ -353,7 +353,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>R 구역</string>
+        <string>Y 구역</string>
        </property>
       </widget>
      </widget>
@@ -367,7 +367,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>시스템 센서 현황</string>
+       <string>시스템  현황</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_13">
