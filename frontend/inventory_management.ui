@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>910</width>
-    <height>552</height>
+    <width>956</width>
+    <height>556</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,8 +18,8 @@
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>871</width>
-     <height>461</height>
+     <width>931</width>
+     <height>521</height>
     </rect>
    </property>
    <property name="currentIndex">
@@ -37,22 +37,22 @@
     <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>10</x>
        <y>20</y>
-       <width>411</width>
-       <height>391</height>
+       <width>901</width>
+       <height>461</height>
       </rect>
      </property>
      <property name="title">
-      <string>Inventory Management</string>
+      <string/>
      </property>
      <widget class="QFrame" name="frame">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>50</y>
-        <width>371</width>
-        <height>101</height>
+        <x>460</x>
+        <y>310</y>
+        <width>431</width>
+        <height>121</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -84,7 +84,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>누적 입고 :</string>
+        <string>누적 입고</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_3">
@@ -97,42 +97,94 @@
         </rect>
        </property>
        <property name="text">
-        <string>누적 출고 :</string>
+        <string>누적 출고</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_17">
        <property name="geometry">
         <rect>
-         <x>190</x>
+         <x>200</x>
          <y>40</y>
          <width>101</width>
          <height>19</height>
         </rect>
        </property>
        <property name="text">
-        <string>입고 입력 개수 :</string>
+        <string>입고 입력 개수</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_18">
        <property name="geometry">
         <rect>
-         <x>190</x>
+         <x>200</x>
          <y>70</y>
          <width>101</width>
          <height>19</height>
         </rect>
        </property>
        <property name="text">
-        <string>출고 입력 개수 :</string>
+        <string>출고 입력 개수</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="acc_receive_count">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>40</y>
+         <width>113</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="acc_ship_count">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>70</y>
+         <width>113</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="inut_ship_count">
+       <property name="geometry">
+        <rect>
+         <x>302</x>
+         <y>70</y>
+         <width>121</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="input_receive_count">
+       <property name="geometry">
+        <rect>
+         <x>302</x>
+         <y>40</y>
+         <width>121</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
      <widget class="QFrame" name="frame_2">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>170</y>
-        <width>371</width>
+        <x>460</x>
+        <y>20</y>
+        <width>431</width>
         <height>131</height>
        </rect>
       </property>
@@ -145,7 +197,7 @@
       <widget class="QLabel" name="label_4">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>20</x>
          <y>10</y>
          <width>131</width>
          <height>19</height>
@@ -158,46 +210,46 @@
       <widget class="QLabel" name="label_5">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>20</x>
          <y>40</y>
-         <width>66</width>
+         <width>61</width>
          <height>19</height>
         </rect>
        </property>
        <property name="text">
-        <string>R 구역 :</string>
+        <string>R 구역</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_6">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>20</x>
          <y>70</y>
-         <width>66</width>
+         <width>61</width>
          <height>19</height>
         </rect>
        </property>
        <property name="text">
-        <string>G 구역 :</string>
+        <string>G 구역</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_7">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>20</x>
          <y>100</y>
-         <width>66</width>
+         <width>51</width>
          <height>19</height>
         </rect>
        </property>
        <property name="text">
-        <string>Y 구역 :</string>
+        <string>Y 구역</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_8">
        <property name="geometry">
         <rect>
-         <x>200</x>
+         <x>230</x>
          <y>10</y>
          <width>131</width>
          <height>19</height>
@@ -210,63 +262,128 @@
       <widget class="QLabel" name="label_9">
        <property name="geometry">
         <rect>
-         <x>200</x>
+         <x>230</x>
          <y>70</y>
-         <width>66</width>
+         <width>131</width>
          <height>19</height>
         </rect>
        </property>
        <property name="text">
-        <string>G 구역 :</string>
+        <string>G 구역</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_10">
        <property name="geometry">
         <rect>
-         <x>200</x>
+         <x>230</x>
          <y>40</y>
-         <width>66</width>
+         <width>131</width>
          <height>19</height>
         </rect>
        </property>
        <property name="text">
-        <string>R 구역 :</string>
+        <string>R 구역</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_11">
        <property name="geometry">
         <rect>
-         <x>200</x>
+         <x>230</x>
          <y>100</y>
-         <width>66</width>
+         <width>131</width>
          <height>19</height>
         </rect>
        </property>
        <property name="text">
-        <string>Y 구역 :</string>
+        <string>Y 구역</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="receive_count_r">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>40</y>
+         <width>141</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="receive_count_g">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>70</y>
+         <width>141</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="receive_count_y">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>100</y>
+         <width>141</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="ship_count_g">
+       <property name="geometry">
+        <rect>
+         <x>290</x>
+         <y>70</y>
+         <width>131</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="ship_count_r">
+       <property name="geometry">
+        <rect>
+         <x>290</x>
+         <y>40</y>
+         <width>131</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="ship_count_y">
+       <property name="geometry">
+        <rect>
+         <x>290</x>
+         <y>100</y>
+         <width>131</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
-    </widget>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="geometry">
-      <rect>
-       <x>450</x>
-       <y>20</y>
-       <width>401</width>
-       <height>391</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Sector Management</string>
-     </property>
      <widget class="QFrame" name="frame_3">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>260</y>
-        <width>381</width>
-        <height>101</height>
+        <x>460</x>
+        <y>160</y>
+        <width>431</width>
+        <height>141</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -275,12 +392,12 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QProgressBar" name="progressBar">
+      <widget class="QProgressBar" name="stock_count_r">
        <property name="geometry">
         <rect>
          <x>70</x>
-         <y>10</y>
-         <width>301</width>
+         <y>40</y>
+         <width>351</width>
          <height>23</height>
         </rect>
        </property>
@@ -288,12 +405,12 @@
         <number>10</number>
        </property>
       </widget>
-      <widget class="QProgressBar" name="progressBar_2">
+      <widget class="QProgressBar" name="stock_count_g">
        <property name="geometry">
         <rect>
          <x>70</x>
-         <y>40</y>
-         <width>301</width>
+         <y>70</y>
+         <width>351</width>
          <height>23</height>
         </rect>
        </property>
@@ -304,12 +421,12 @@
         <number>60</number>
        </property>
       </widget>
-      <widget class="QProgressBar" name="progressBar_3">
+      <widget class="QProgressBar" name="stock_count_y">
        <property name="geometry">
         <rect>
          <x>70</x>
-         <y>70</y>
-         <width>301</width>
+         <y>100</y>
+         <width>351</width>
          <height>23</height>
         </rect>
        </property>
@@ -321,7 +438,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>10</y>
+         <y>40</y>
          <width>66</width>
          <height>19</height>
         </rect>
@@ -334,7 +451,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>40</y>
+         <y>70</y>
          <width>66</width>
          <height>19</height>
         </rect>
@@ -347,7 +464,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>70</y>
+         <y>100</y>
          <width>66</width>
          <height>19</height>
         </rect>
@@ -356,40 +473,27 @@
         <string>Y 구역</string>
        </property>
       </widget>
-     </widget>
-     <widget class="QLabel" name="label_12">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>121</width>
-        <height>19</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>시스템  현황</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_13">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>230</y>
-        <width>121</width>
-        <height>19</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>창고 재고 현황</string>
-      </property>
+      <widget class="QLabel" name="label_13">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>121</width>
+         <height>19</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>창고 재고 현황</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QFrame" name="frame_4">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>70</y>
-        <width>381</width>
-        <height>151</height>
+        <x>20</x>
+        <y>20</y>
+        <width>421</width>
+        <height>411</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -398,6 +502,19 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
+      <widget class="QLabel" name="label_12">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>121</width>
+         <height>19</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>구역 현황</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </widget>
