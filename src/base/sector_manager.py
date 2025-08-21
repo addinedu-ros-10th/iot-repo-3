@@ -20,21 +20,39 @@ class ItemColor(Enum):
 
 class SectorStatus(Enum):
   """구역의 상태를 정의합니다."""
-  AVAILABLE = auto()    # 사용 가능 (재고 꽉 차지 않음)
-  PROCESSING = auto()   # 사용 중 (센서 처리작업 중)
+  AVAILABLE = auto()    # 사용 가능 (비어 있음)
+  PROCESSING = auto()   # 사용 중 (물품 처리 중)
   UNAVAILABLE = auto()  # 사용 불가능 (오류 등)
   FULL = auto()         # 가득 참
 
-# 아이템 상태 관리 enum?
-# 모터 / 센서 상태 관리 enum?
+class MotorStatus(Enum):
+  """모터의 상태를 정의합니다."""
+  ON = auto()
+  OFF = auto()
 
-'''
-구역 PROCESSING 상태?
-1. 센서 처리 중 상태?
-2. 재고가 1개 이상 있는 상태?
-'''
+class Motor:
+  """
+  하나의 모터를 나타내는 클래스.
+  이름과 상태(ON/OFF) 정보를 가집니다.
+  """
+  def __init__(self, name: str):
+    self.name = name
+    self.status: MotorStatus = MotorStatus.OFF # 모든 모터는 OFF 상태에서 시작
 
-# --- Sector 클래스 (재고/용량 기능 추가) ---
+  def turn_on(self):
+    if self.status != MotorStatus.ON:
+      print(f"  - 모터 [{self.name}] 상태 변경: OFF -> ON")
+      self.status = MotorStatus.ON
+
+  def turn_off(self):
+    if self.status != MotorStatus.OFF:
+      print(f"  - 모터 [{self.name}] 상태 변경: ON -> OFF")
+      self.status = MotorStatus.OFF
+  
+  def __repr__(self):
+    return f"Motor(name={self.name}, status={self.status.name})"
+
+# --- Sector 클래스 ---
 
 class Sector:
   """
@@ -42,30 +60,58 @@ class Sector:
   상태, 재고, 용량 정보를 포함하고 관련 메서드를 제공합니다.
   """
   def __init__(self, name: SectorName, capacity: int = 0, sensor_list: Optional[List[str]] = None, motor_list: Optional[List[str]] = None):
-    """
-    Sector 객체를 초기화합니다.
-
-    :param name: 구역의 고유 이름 (SectorName Enum)
-    :param capacity: 이 구역이 수용할 수 있는 최대 물품 수 (0 : 제한 없음 / 양수 : 해당 수로 구역의 최대 물품 수 제한)
-    :param sensor_list: 할당된 센서 ID 리스트
-    :param motor_list: 할당된 모터 ID 리스트
-    """
     self.name = name
     self.capacity = capacity
-    self.stock: int = 0 # 현재 물품 재고 (0 : 재고 제한 없음)
+    self.stock: int = 0
     self.sensor_list: List[str] = sensor_list if sensor_list is not None else []
-    self.motor_list: List[str] = motor_list if motor_list is not None else []
+    
+    # motor_list를 Motor 객체의 딕셔너리로 변환하여 저장
+    self.motors: Dict[str, Motor] = {motor_name: Motor(motor_name) for motor_name in motor_list} if motor_list else {}
     self.status: SectorStatus = SectorStatus.UNAVAILABLE
 
+  # --- 모터 제어 관련 메서드 ---
+  def turn_on_motor(self, motor_name: str) -> bool:
+    """지정된 이름의 모터를 켭니다."""
+    if motor_name in self.motors:
+      self.motors[motor_name].turn_on()
+      return True
+    print(f"오류: [{self.name.name}] 구역에 '{motor_name}' 모터가 존재하지 않습니다.")
+    return False
+
+  def turn_off_motor(self, motor_name: str) -> bool:
+    """지정된 이름의 모터를 끕니다."""
+    if motor_name in self.motors:
+      self.motors[motor_name].turn_off()
+      return True
+    print(f"오류: [{self.name.name}] 구역에 '{motor_name}' 모터가 존재하지 않습니다.")
+    return False
+    
+  def get_motor_status(self, motor_name: str) -> Optional[MotorStatus]:
+    """지정된 이름의 모터 상태를 반환합니다."""
+    if motor_name in self.motors:
+      return self.motors[motor_name].status
+    print(f"오류: [{self.name.name}] 구역에 '{motor_name}' 모터가 존재하지 않습니다.")
+    return None
+
+  def display_motor_statuses(self):
+    """해당 구역의 모든 모터 상태를 출력합니다."""
+    print(f"--- [{self.name.name}] 구역 모터 상태 ---")
+    if not self.motors:
+      print("  (모터 없음)")
+    else:
+      for motor_name, motor in self.motors.items():
+        print(f"  - {motor_name:<8}: {motor.status.name}")
+    print("--------------------------")
+
+
+  # ------------------------------------------
+  
   def update_status(self, new_status: SectorStatus):
-    """구역의 상태를 변경합니다."""
     if self.status != new_status:
       print(f"[{self.name.name}] 상태 변경: {self.status.name} -> {new_status.name}")
       self.status = new_status
 
-  def add_stock(self, quantity : int = 1) -> bool:
-    """재고 추가 기능. 성공시 True / 실패시 False 반환"""
-    # capacity값이 0이면 재고 제한 없음
+  def add_stock(self, quantity: int = 1) -> bool:
     if self.capacity != 0 and self.stock + quantity > self.capacity:
       print(f"[{self.name.name}] 재고 추가 실패: 용량 초과 (현재: {self.stock}, 용량: {self.capacity})")
       return False
@@ -75,21 +121,24 @@ class Sector:
     
     if self.capacity != 0 and self.stock == self.capacity:
       self.update_status(SectorStatus.FULL)
+    elif self.status == SectorStatus.AVAILABLE: # 비어있다가 재고가 생기면 PROCESSING으로
+        self.update_status(SectorStatus.PROCESSING)
     return True
 
   def remove_stock(self, quantity: int = 1) -> bool:
-    """재고를 제거합니다. 성공 시 True, 실패(재고 부족) 시 False를 반환합니다."""
-    if self.stock - quantity >= 0:
-      self.stock -= quantity
-      print(f"[{self.name.name}] 재고 제거: {self.stock + quantity} -> {self.stock}")
-      # 재고가 0이 되면 상태를 AVAILABLE로 변경
-      if self.stock == 0:
-        self.update_status(SectorStatus.AVAILABLE)
-
-      return True
-    else:
+    if self.stock - quantity < 0:
       print(f"[{self.name.name}] 재고 제거 실패: 재고 부족 (현재: {self.stock})")
       return False
+      
+    self.stock -= quantity
+    print(f"[{self.name.name}] 재고 제거: {self.stock + quantity} -> {self.stock}")
+    
+    if self.stock == 0:
+      self.update_status(SectorStatus.AVAILABLE)
+    # 꽉 차있다가 재고가 빠지면 PROCESSING으로
+    elif self.status == SectorStatus.FULL and self.stock < self.capacity:
+      self.update_status(SectorStatus.PROCESSING)
+    return True
 
   @property
   def is_available_for_storage(self) -> bool:
@@ -105,13 +154,11 @@ class Sector:
     return (f"Sector(name={self.name.name}, status={self.status.name}, "
             f"stock={self.stock}/{capacity_str})")
 
-# --- SectorManager 클래스 (재고 관리 로직 추가) ---
-  # - 싱글톤 패턴 사용 : 구역에 대한 인스턴스는 1개만 생성
+# --- SectorManager 클래스 ---
 
 class SectorManager:
   """
-  전체 구역을 중앙에서 관리하는 싱글톤(Singleton) 클래스.
-  재고 관리 및 물품 입/출고 로직을 포함합니다.
+  전체 구역을 중앙에서 관리하는 싱글톤 클래스.
   """
   _instance = None
 
@@ -121,61 +168,56 @@ class SectorManager:
     return cls._instance
 
   def __init__(self):
-    # __new__에서 여러 번 호출되는 것을 방지하기 위한 초기화 플래그
     if not hasattr(self, 'initialized'):
       self.sectors: Dict[SectorName, Sector] = {
-        SectorName.RECEIVING: Sector(
-            name=SectorName.RECEIVING,
-            capacity=0,
-            sensor_list=["RGB", "PROXI"], # 컬러 센서 / 근접 센서 
-            motor_list=["SERVO"]
-        ),
-        SectorName.RED_STORAGE: Sector(
-            name=SectorName.RED_STORAGE, 
-            capacity=3,
-            sensor_list=["PROXI"], 
-            motor_list=["SERVO"]
-        ),
-        SectorName.GREEN_STORAGE: Sector(
-            name=SectorName.GREEN_STORAGE, 
-            capacity=3,
-            sensor_list=["PROXI"], 
-            motor_list=["SERVO"]
-        ),
-        SectorName.YELLOW_STORAGE: Sector(
-            name=SectorName.YELLOW_STORAGE, 
-            capacity=3,
-            sensor_list=["PROXI"], 
-            motor_list=["SERVO"]
-        ),
-        SectorName.SHIPPING: Sector(
-            name=SectorName.SHIPPING, 
-            capacity=0,
-            sensor_list=["RGB", "PROXI"], 
-            motor_list=["SERVO"]
-        )
+        # 입고 구역 : 로봇
+        SectorName.RECEIVING: Sector(name=SectorName.RECEIVING, capacity=0, sensor_list=["RGB1", "RGB2"], motor_list=["SERVO1", "STEP1", "DC1"]),
+        SectorName.RED_STORAGE: Sector(name=SectorName.RED_STORAGE, capacity=3, sensor_list=["PROXI1"], motor_list=["STEP1"]),
+        SectorName.GREEN_STORAGE: Sector(name=SectorName.GREEN_STORAGE, capacity=3, sensor_list=["PROXI1"], motor_list=["STEP1"]),
+        SectorName.YELLOW_STORAGE: Sector(name=SectorName.YELLOW_STORAGE, capacity=3, sensor_list=["PROXI1"], motor_list=["STEP1"]),
+        SectorName.SHIPPING: Sector(name=SectorName.SHIPPING, capacity=0, sensor_list=["RGB1"])
       }
-      self.initialized = True
+      
+      # 누적 수량 저장
+      self.count: Dict[SectorName, int] = {
+        # 누적 재고
+        SectorName.RECEIVING : 0,
+        SectorName.RED_STORAGE : 0,
+        SectorName.GREEN_STORAGE : 0,
+        SectorName.YELLOW_STORAGE : 0,
+        SectorName.SHIPPING : 0,        
+      }
+
+  def update_sector_status(self, name: SectorName, new_status: SectorStatus) -> bool:
+    """
+    특정 구역의 상태를 직접 업데이트합니다.
+
+    Args:
+        name (SectorName): 상태를 변경할 구역의 이름.
+        new_status (SectorStatus): 설정할 새로운 상태.
+
+    Returns:
+        bool: 상태 변경 성공 시 True, 해당 구역이 존재하지 않으면 False.
+    """
+    if name in self.sectors:
+      sector_to_update = self.get_sector(name)
+      sector_to_update.update_status(new_status)
+      return True
+    else:
+      print(f"오류: '{name}'에 해당하는 구역을 찾을 수 없습니다.")
+      return False
 
   def initialize_all_sectors(self):
-    """모든 구역의 상태를 'AVAILABLE'로 초기화합니다."""
     print("--- 모든 구역을 사용 가능(AVAILABLE) 상태로 초기화합니다. ---")
     for sector in self.sectors.values():
       sector.update_status(SectorStatus.AVAILABLE)
 
   def get_sector(self, name: SectorName) -> Sector:
-    """이름으로 특정 구역 객체를 가져옵니다."""
     return self.sectors[name]
-  
-  def update_sector_status(self, name: SectorName, status: SectorStatus):
-    """특정 구역의 상태를 업데이트합니다."""
-    if name in self.sectors:
-      self.sectors[name].update_status(status)
-    else:
-      print(f"오류: {name}이라는 이름의 구역을 찾을 수 없습니다.")
 
-  def _get_storage_sector_name(self, color: ItemColor) -> SectorName:
-    """아이템 색상에 해당하는 저장 구역 이름을 반환합니다."""
+  def _get_storage_sector_name(self, color: ItemColor) -> Optional[SectorName]:
+    if color == ItemColor.UNKNOWN:
+        return None
     return SectorName[f"{color.name}_STORAGE"]
 
   def receive_new_item(self) -> bool:
@@ -195,12 +237,12 @@ class SectorManager:
     storage_name = self._get_storage_sector_name(classified_color)
     storage_sector = self.get_sector(storage_name)
 
-    if not storage_sector.is_available_for_storage:
-        print(f"실패: '{storage_name.name}' 저장 구역이 가득 찼거나 사용할 수 없습니다.")
-        return False
-
     if receiving_sector.stock == 0:
         print("실패: 입고 구역에 분류할 물품이 없습니다.")
+        return False
+
+    if not storage_sector.is_available_for_storage:
+        print(f"실패: '{storage_name.name}' 저장 구역이 가득 찼거나 사용할 수 없습니다.")
         return False
 
     # 트랜잭션: 한쪽 성공 시 다른 쪽도 반드시 성공해야 함
@@ -246,3 +288,31 @@ class SectorManager:
       capacity_str = "무제한" if sector.capacity == 0 else str(sector.capacity)
       print(f"- {name.name:<15}: {sector.status.name:<12} | 재고: {sector.stock}/{capacity_str}")
     print("--------------------------")
+
+if __name__ == '__main__':
+  # SectorManager 인스턴스 생성
+  manager = SectorManager()
+  
+  # 입고(RECEIVING) 구역의 모터 상태 확인
+  receiving_sector = manager.get_sector(SectorName.RECEIVING)
+  receiving_sector.display_motor_statuses()
+  
+  # SERVO1 모터 켜기
+  print("\n>>> SERVO1 모터를 켭니다...")
+  receiving_sector.turn_on_motor("SERVO1")
+  
+  # 현재 SERVO1 모터 상태 확인
+  servo_status = receiving_sector.get_motor_status("SERVO1")
+  print(f"현재 SERVO1 모터 상태: {servo_status.name if servo_status else '알 수 없음'}")
+  
+  # 입고 구역의 모든 모터 상태 다시 확인
+  receiving_sector.display_motor_statuses()
+  
+  # SERVO1 모터 끄기
+  print("\n>>> SERVO1 모터를 끕니다...")
+  receiving_sector.turn_off_motor("SERVO1")
+  receiving_sector.display_motor_statuses()
+
+  # 존재하지 않는 모터 제어 시도
+  print("\n>>> 존재하지 않는 모터를 제어합니다...")
+  receiving_sector.turn_on_motor("MOTOR_X")

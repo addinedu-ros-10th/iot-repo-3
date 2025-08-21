@@ -1,4 +1,4 @@
-from sector_library import SectorManager, SectorName, SectorStatus, ItemColor
+from src.base.sector_manager import SectorManager, SectorName, SectorStatus, ItemColor
 
 if __name__ == "__main__":
   # SectorManager 인스턴스 생성 (싱글톤)
