@@ -5,6 +5,7 @@ from PyQt6 import uic
 
 from GUI.tabs.main_monitor import MainMonitorTab
 from GUI.tabs.simple_monitor import SimpleMonitorTab
+from GUI.tabs.system_manage import SystemManageTab
 from GUI.client.tcp_client import stop_tcp_client
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -30,6 +31,10 @@ class StoreWorldMain(QMainWindow, Ui_main):
         # 새로운 간단한 모니터 탭 (LMS 분리 버전)
         self.simple_monitor_tab = SimpleMonitorTab()
         self.tabWidget.addTab(self.simple_monitor_tab, "LMS 모니터")
+        
+        # 시스템 관리 탭
+        self.system_manage_tab = SystemManageTab()
+        self.tabWidget.addTab(self.system_manage_tab, "시스템 관리")
 
         # self.sensor_tab = SensorsTab()
         # self.tabWidget.addTab(self.sensor_tab, "Sensor Tab")
@@ -45,6 +50,9 @@ class StoreWorldMain(QMainWindow, Ui_main):
         
         # 새로운 LMS TCP 클라이언트 중지
         stop_tcp_client()
+        
+        # 시스템 관리 탭의 상태 모니터링 중지
+        self.system_manage_tab.stop_status_monitoring()
         
         event.accept()
 

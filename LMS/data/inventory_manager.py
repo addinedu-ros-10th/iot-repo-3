@@ -46,11 +46,11 @@ class InventoryManager:
         
         # 구역별 최대 용량 설정
         self._max_capacity: Dict[SectorType, int] = {
-            SectorType.RECEIVING: 10,
-            SectorType.RED_STORAGE: 15,
-            SectorType.GREEN_STORAGE: 15,
-            SectorType.YELLOW_STORAGE: 15,
-            SectorType.SHIPPING: 20,
+            SectorType.RECEIVING: 0, # 제한 없음
+            SectorType.RED_STORAGE: 3,
+            SectorType.GREEN_STORAGE: 3,
+            SectorType.YELLOW_STORAGE: 3,
+            SectorType.SHIPPING: 0, # 제한 없음
         }
         
         # 누적 입출고 카운터 (CU 명령어용)
@@ -106,13 +106,19 @@ class InventoryManager:
             current_stock = self._inventory[SectorType.RECEIVING]
             max_capacity = self._max_capacity[SectorType.RECEIVING]
             
-            if current_stock + quantity > max_capacity:
+            if max_capacity == 0:            
+                self._inventory[SectorType.RECEIVING] += quantity
+                # 누적 입고 수량 업데이트
+                self._cumulative_stock[SectorType.RECEIVING] += quantity
+                return True, self._inventory[SectorType.RECEIVING]
+            elif current_stock + quantity > max_capacity:
                 return False, current_stock  # 용량 초과
-            
+    
             self._inventory[SectorType.RECEIVING] += quantity
             # 누적 입고 수량 업데이트
             self._cumulative_stock[SectorType.RECEIVING] += quantity
             return True, self._inventory[SectorType.RECEIVING]
+
     
     def ship_item(self, color_code: int) -> bool:
         """
@@ -203,6 +209,23 @@ class InventoryManager:
         with self._lock:
             for sector in self._inventory:
                 self._inventory[sector] = 0
+    
+    def reset_receiving_stock(self) -> None:
+        """입고 구역 재고 초기화"""
+        with self._lock:
+            self._inventory[SectorType.RECEIVING] = 0
+    
+    def reset_storage_stock(self) -> None:
+        """보관 구역 재고 초기화 (R, G, Y)"""
+        with self._lock:
+            self._inventory[SectorType.RED_STORAGE] = 0
+            self._inventory[SectorType.GREEN_STORAGE] = 0
+            self._inventory[SectorType.YELLOW_STORAGE] = 0
+    
+    def reset_shipping_stock(self) -> None:
+        """출고 구역 재고 초기화"""
+        with self._lock:
+            self._inventory[SectorType.SHIPPING] = 0
 
 
 # 전역 인벤토리 매니저 인스턴스 (싱글톤)
@@ -219,11 +242,18 @@ def get_inventory_manager() -> InventoryManager:
             if _inventory_manager_instance is None:
                 _inventory_manager_instance = InventoryManager()
                 
-                # 초기 테스트 데이터 설정
-                _inventory_manager_instance.set_stock(SectorType.RECEIVING, 3)
-                _inventory_manager_instance.set_stock(SectorType.RED_STORAGE, 5)
-                _inventory_manager_instance.set_stock(SectorType.GREEN_STORAGE, 2)
-                _inventory_manager_instance.set_stock(SectorType.YELLOW_STORAGE, 4)
-                _inventory_manager_instance.set_stock(SectorType.SHIPPING, 1)
+                # 초기 데이터 설정
+                _inventory_manager_instance.set_stock(SectorType.RECEIVING, 0)
+                _inventory_manager_instance.set_stock(SectorType.RED_STORAGE, 0)
+                _inventory_manager_instance.set_stock(SectorType.GREEN_STORAGE, 0)
+                _inventory_manager_instance.set_stock(SectorType.YELLOW_STORAGE, 0)
+                _inventory_manager_instance.set_stock(SectorType.SHIPPING, 0)
+
+                # # 초기 테스트 데이터 설정
+                # _inventory_manager_instance.set_stock(SectorType.RECEIVING, 3)
+                # _inventory_manager_instance.set_stock(SectorType.RED_STORAGE, 5)
+                # _inventory_manager_instance.set_stock(SectorType.GREEN_STORAGE, 2)
+                # _inventory_manager_instance.set_stock(SectorType.YELLOW_STORAGE, 4)
+                # _inventory_manager_instance.set_stock(SectorType.SHIPPING, 1)
     
     return _inventory_manager_instance

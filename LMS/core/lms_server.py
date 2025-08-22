@@ -52,7 +52,7 @@ class LMSServer:
                     client_thread = threading.Thread(
                         target=self._handle_client,
                         args=(client_socket, addr),
-                        daemon=True
+                        daemon=False
                     )
                     client_thread.start()
                     self.client_threads.append(client_thread)
@@ -109,7 +109,7 @@ class LMSServer:
     
     def stop(self) -> None:
         """서버를 중지합니다."""
-        print(" LMS 서버 중지 중...")
+        print("\n💤 LMS 서버 중지 중...")
         self.is_running = False
         
         if self.server_socket:
@@ -119,11 +119,12 @@ class LMSServer:
                 pass
         
         # 모든 클라이언트 스레드 종료 대기
+        print("🔄 클라이언트 연결 정리 중...")
         for thread in self.client_threads:
             if thread.is_alive():
-                thread.join(timeout=1.0)
+                thread.join(timeout=2.0)
         
-        print(" LMS 서버가 안전하게 종료되었습니다.")
+        print("✅ LMS 서버가 안전하게 종료되었습니다.")
     
     def _cleanup(self) -> None:
         """리소스 정리"""
@@ -188,16 +189,8 @@ def main():
     server = LMSServer()
     
     try:
-        # 서버 시작
-        server_thread = threading.Thread(target=server.start, daemon=False)
-        server_thread.start()
-        
-        # 서버 상태 모니터링
-        while server.is_running:
-            time.sleep(5)
-            info = server.get_server_info()
-            print(f" 서버 상태: 활성 클라이언트 {info['active_clients']}개")
-            
+        # 서버 직접 시작
+        server.start()
     except KeyboardInterrupt:
         print("\n⌨ 키보드 인터럽트 감지")
     except Exception as e:

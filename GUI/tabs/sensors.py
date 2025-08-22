@@ -37,11 +37,11 @@ class SensorsTab(QWidget, Ui_Tab): # QWidget과 UI 폼 클래스를 상속
 
         self.healthLabel = self.findChild(QLabel, "labelHealth")
 
-        # --- 시스템 상태 주기적 업데이트 ---
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_system_health)
-        self.timer.timeout.connect(self.update_state)
-        self.timer.start(2000)
+        # # --- 시스템 상태 주기적 업데이트 ---
+        # self.timer = QTimer(self)
+        # self.timer.timeout.connect(self.update_system_health)
+        # self.timer.timeout.connect(self.update_state)
+        # self.timer.start(2000)
 
                 
         self.update_system_health()

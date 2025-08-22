@@ -32,6 +32,14 @@ class CommandHandler:
             'RE': self.handle_receive_item,
             'SH': self.handle_ship_item,
             'SO': self.handle_sort_item,
+            'CR': self.handle_clear_receiving,
+            'CS': self.handle_clear_storage,
+            'CH': self.handle_clear_shipping,
+            'CA': self.handle_clear_all,
+            'RM': self.handle_robot_move,
+            'CB': self.handle_conveyor_test,
+            'AS': self.handle_agv_servo_test,
+            'SM': self.handle_storage_motor_test,
         }
     
     def process_command(self, command: str, data: bytes) -> bytes:
@@ -157,6 +165,92 @@ class CommandHandler:
         if success:
             return StatusCode.SUCCESS, b''
         else:
+            return StatusCode.FAILURE, b''
+    
+    def handle_clear_receiving(self, data: bytes) -> Tuple[int, bytes]:
+        """CR - 입고 구역 재고 초기화"""
+        try:
+            self.inventory.reset_receiving_stock()
+            return StatusCode.SUCCESS, b''
+        except Exception:
+            return StatusCode.FAILURE, b''
+    
+    def handle_clear_storage(self, data: bytes) -> Tuple[int, bytes]:
+        """CS - 보관 구역 재고 초기화 (R, G, Y)"""
+        try:
+            self.inventory.reset_storage_stock()
+            return StatusCode.SUCCESS, b''
+        except Exception:
+            return StatusCode.FAILURE, b''
+    
+    def handle_clear_shipping(self, data: bytes) -> Tuple[int, bytes]:
+        """CH - 출고 구역 재고 초기화"""
+        try:
+            self.inventory.reset_shipping_stock()
+            return StatusCode.SUCCESS, b''
+        except Exception:
+            return StatusCode.FAILURE, b''
+    
+    def handle_clear_all(self, data: bytes) -> Tuple[int, bytes]:
+        """CA - 전체 구역 재고 초기화"""
+        try:
+            self.inventory.reset_all_stock()
+            return StatusCode.SUCCESS, b''
+        except Exception:
+            return StatusCode.FAILURE, b''
+    
+    def handle_robot_move(self, data: bytes) -> Tuple[int, bytes]:
+        """RM - 로봇 이동 명령"""
+        if len(data) < 1:
+            return StatusCode.INVALID_DATA, b''
+        
+        position = data[0]  # 0: 입고, 1: R, 2: G, 3: Y, 4: 출고
+        
+        if position > 4:
+            return StatusCode.INVALID_DATA, b''
+        
+        try:
+            # 실제 로봇 제어 로직은 여기에 구현
+            # 현재는 시뮬레이션으로 항상 성공 반환
+            print(f"로봇 이동 명령: 위치 {position}")
+            return StatusCode.SUCCESS, b''
+        except Exception:
+            return StatusCode.FAILURE, b''
+    
+    def handle_conveyor_test(self, data: bytes) -> Tuple[int, bytes]:
+        """CB - 컨베이어 벨트 테스트"""
+        try:
+            # 실제 컨베이어 벨트 제어 로직은 여기에 구현
+            print("컨베이어 벨트 테스트 실행")
+            return StatusCode.SUCCESS, b''
+        except Exception:
+            return StatusCode.FAILURE, b''
+    
+    def handle_agv_servo_test(self, data: bytes) -> Tuple[int, bytes]:
+        """AS - AGV 서보모터 테스트"""
+        try:
+            # 실제 AGV 서보모터 제어 로직은 여기에 구현
+            print("AGV 서보모터 테스트 실행")
+            return StatusCode.SUCCESS, b''
+        except Exception:
+            return StatusCode.FAILURE, b''
+    
+    def handle_storage_motor_test(self, data: bytes) -> Tuple[int, bytes]:
+        """SM - 보관함 서보모터 테스트"""
+        if len(data) < 1:
+            return StatusCode.INVALID_DATA, b''
+        
+        color_code = data[0]  # 0x01: R, 0x02: G, 0x03: Y
+        
+        if color_code not in [0x01, 0x02, 0x03]:
+            return StatusCode.INVALID_DATA, b''
+        
+        try:
+            # 실제 보관함 서보모터 제어 로직은 여기에 구현
+            color_names = {0x01: 'R', 0x02: 'G', 0x03: 'Y'}
+            print(f"보관함 {color_names[color_code]} 구역 서보모터 테스트 실행")
+            return StatusCode.SUCCESS, b''
+        except Exception:
             return StatusCode.FAILURE, b''
 
 

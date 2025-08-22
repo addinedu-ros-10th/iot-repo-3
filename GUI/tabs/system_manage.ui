@@ -1,0 +1,791 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>970</width>
+    <height>520</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>950</width>
+     <height>500</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   
+   <!-- 좌측 영역: 시스템 상태 확인 -->
+   <widget class="QFrame" name="left_panel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>455</width>
+      <height>480</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    
+    <!-- GUI 서버 상태 섹션 -->
+    <widget class="QFrame" name="gui_status_frame">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>435</width>
+       <height>80</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <widget class="QLabel" name="gui_status_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>GUI 서버 상태</string>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="gui_status_btn">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>40</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>연결됨</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string>QPushButton:checked { background-color: green; color: white; }
+QPushButton:!checked { background-color: red; color: white; }</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="gui_status_desc">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>280</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>GUI 클라이언트 - LMS 서버 연결 상태</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    
+    <!-- LMS 서버 상태 섹션 -->
+    <widget class="QFrame" name="lms_status_frame">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>435</width>
+       <height>80</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <widget class="QLabel" name="lms_status_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>LMS 서버 상태</string>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="lms_status_btn">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>40</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>실행중</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string>QPushButton:checked { background-color: green; color: white; }
+QPushButton:!checked { background-color: red; color: white; }</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lms_status_desc">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>280</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>LMS 서버 실행 및 TCP 통신 상태</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    
+    <!-- 하드웨어 상태 섹션 -->
+    <widget class="QFrame" name="hardware_status_frame">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>190</y>
+       <width>435</width>
+       <height>280</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <widget class="QLabel" name="hardware_status_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>하드웨어 상태</string>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+     </widget>
+     
+     <!-- AGV System 상태 -->
+     <widget class="QLabel" name="agv_system_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>AGV System</string>
+      </property>
+      <property name="font">
+       <font>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="agv_status_btn">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>70</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>연결됨</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string>QPushButton:checked { background-color: green; color: white; }
+QPushButton:!checked { background-color: red; color: white; }</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="agv_status_desc">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>280</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>AGV 로봇 시스템 연결 및 동작 상태</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     
+     <!-- Storage Box System 상태 -->
+     <widget class="QLabel" name="storage_system_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>150</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Storage Box System</string>
+      </property>
+      <property name="font">
+       <font>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="storage_status_btn">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>140</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>연결됨</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string>QPushButton:checked { background-color: green; color: white; }
+QPushButton:!checked { background-color: red; color: white; }</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="storage_status_desc">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>280</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>보관함 시스템 연결 및 서보모터 상태</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   
+   <!-- 구분선 -->
+   <widget class="Line" name="vertical_line">
+    <property name="geometry">
+     <rect>
+      <x>475</x>
+      <y>10</y>
+      <width>10</width>
+      <height>480</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   
+   <!-- 우측 영역: 로봇 수동 제어 및 모터 테스트 -->
+   <widget class="QFrame" name="right_panel">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>10</y>
+      <width>450</width>
+      <height>480</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    
+    <!-- 로봇 수동 제어 섹션 -->
+    <widget class="QFrame" name="robot_control_frame">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>430</width>
+       <height>120</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <widget class="QLabel" name="robot_control_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>120</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>로봇 수동 제어</string>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+     </widget>
+     
+     <!-- 슬라이더 제어 -->
+     <widget class="QLabel" name="position_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>80</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>로봇 위치:</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="robot_position_slider">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>40</y>
+        <width>200</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <number>4</number>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="tickPosition">
+       <enum>QSlider::TicksBelow</enum>
+      </property>
+      <property name="tickInterval">
+       <number>1</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="position_value_label">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>40</y>
+        <width>50</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>입고</string>
+      </property>
+     </widget>
+     
+     <!-- 구역 버튼들 -->
+     <widget class="QPushButton" name="btn_move_receiving">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>60</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>입고</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_move_red">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>70</y>
+        <width>60</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>R구역</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_move_green">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>70</y>
+        <width>60</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>G구역</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_move_yellow">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>70</y>
+        <width>60</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Y구역</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_move_shipping">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>70</y>
+        <width>60</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>출고</string>
+      </property>
+     </widget>
+    </widget>
+    
+    <!-- 모터 테스트 섹션 -->
+    <widget class="QFrame" name="motor_test_frame">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>430</width>
+       <height>330</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <widget class="QLabel" name="motor_test_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>모터 테스트</string>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+     </widget>
+     
+     <!-- AGV System 모터 테스트 -->
+     <widget class="QFrame" name="agv_motor_frame">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>410</width>
+        <height>120</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <widget class="QLabel" name="agv_motor_label">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>100</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>AGV System</string>
+       </property>
+       <property name="font">
+        <font>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+      </widget>
+      
+      <widget class="QLabel" name="conveyor_label">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>120</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>1. 컨베이어 벨트:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_conveyor_test">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>35</y>
+         <width>100</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>테스트</string>
+       </property>
+      </widget>
+      
+      <widget class="QLabel" name="agv_servo_label">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>75</y>
+         <width>120</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>2. 서보모터:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_agv_servo_test">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>70</y>
+         <width>100</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>테스트</string>
+       </property>
+      </widget>
+     </widget>
+     
+     <!-- Storage Box 모터 테스트 -->
+     <widget class="QFrame" name="storage_motor_frame">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>170</y>
+        <width>410</width>
+        <height>150</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <widget class="QLabel" name="storage_motor_label">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>100</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Storage Box</string>
+       </property>
+       <property name="font">
+        <font>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+      </widget>
+      
+      <widget class="QLabel" name="storage_servo_label">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>120</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>1. 서보모터 테스트:</string>
+       </property>
+      </widget>
+      
+      <widget class="QLabel" name="r_motor_label">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>70</y>
+         <width>80</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>R 구역 모터:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_r_motor_test">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>65</y>
+         <width>80</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>테스트</string>
+       </property>
+      </widget>
+      
+      <widget class="QLabel" name="g_motor_label">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>105</y>
+         <width>80</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>G 구역 모터:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_g_motor_test">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>100</y>
+         <width>80</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>테스트</string>
+       </property>
+      </widget>
+      
+      <widget class="QLabel" name="y_motor_label">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>105</y>
+         <width>80</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Y 구역 모터:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_y_motor_test">
+       <property name="geometry">
+        <rect>
+         <x>290</x>
+         <y>100</y>
+         <width>80</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>테스트</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
