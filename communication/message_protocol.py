@@ -1,5 +1,6 @@
 import struct
 from typing import Dict, Any
+# 리틀 엔디안 ( < )
 
 class MessageProtocol:
     """LMS 통신 프로토콜 처리"""
@@ -44,6 +45,62 @@ class MessageProtocol:
     def pack_ra_data() -> bytes:
         """RA 명령어 데이터 패킹"""
         return b'\x00' * 14
+    
+    @staticmethod
+    def pack_rr_data(region_code: int) -> bytes:
+        """RR (Regional Request) 명령어 데이터 패킹"""
+        return struct.pack('<B', region_code) + b'\x00' * 13
+    
+    @staticmethod  
+    def pack_regional_data(regional_stats: dict) -> bytes:
+        """지역별 누적 통계 데이터 패킹"""
+        # RED(received:2, shipped:2) + GREEN(received:2, shipped:2) + YELLOW(received:2, shipped:2) = 12 bytes
+        return struct.pack('<HHHHHH',
+            regional_stats.get('RED', {}).get('received', 0),
+            regional_stats.get('RED', {}).get('shipped', 0),
+            regional_stats.get('GREEN', {}).get('received', 0),
+            regional_stats.get('GREEN', {}).get('shipped', 0),
+            regional_stats.get('YELLOW', {}).get('received', 0),
+            regional_stats.get('YELLOW', {}).get('shipped', 0)
+        ) + b'\x00' * 2  # padding to 14 bytes
+
+    @staticmethod
+    def pack_rs_data(stats_type: int) -> bytes:
+        """RS (Regional Statistics) 명령어 데이터 패킹"""
+        return struct.pack('<B', stats_type) + b'\x00' * 13
+    
+    @staticmethod
+    def pack_ir_data() -> bytes:
+        """IR (Init Receive) 명령어 데이터 패킹"""
+        return b'\x00' * 14
+    
+    @staticmethod
+    def pack_is_data() -> bytes:
+        """IS (Init Store) 명령어 데이터 패킹"""
+        return b'\x00' * 14
+    
+    @staticmethod
+    def pack_ih_data() -> bytes:
+        """IH (Init Shipping) 명령어 데이터 패킹"""
+        return b'\x00' * 14
+    
+    @staticmethod
+    def pack_ia_data() -> bytes:
+        """IA (Init All) 명령어 데이터 패킹"""
+        return b'\x00' * 14
+    
+    @staticmethod
+    def unpack_regional_data(data: bytes) -> Dict[str, Any]:
+        """지역별 누적 통계 데이터 언패킹"""
+        if len(data) < 12:
+            return {"error": "지역별 데이터 길이 부족"}
+        
+        regional = struct.unpack('<HHHHHH', data[:12])
+        return {
+            'RED': {'received': regional[0], 'shipped': regional[1]},
+            'GREEN': {'received': regional[2], 'shipped': regional[3]}, 
+            'YELLOW': {'received': regional[4], 'shipped': regional[5]}
+        }
     
     @staticmethod
     def unpack_response(response: bytes) -> Dict[str, Any]:

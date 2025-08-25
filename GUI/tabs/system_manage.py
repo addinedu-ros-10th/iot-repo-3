@@ -9,6 +9,9 @@ from PyQt6.QtCore import Qt, QThread, pyqtSignal, QTimer
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from communication.com_manager import ComManager
 
+# Robot and RobotStatus import from stw_lib
+from stw_lib.sector_manager2 import Robot, RobotStatus, SectorName
+
 # 30초에 한번 시스템 모니터링
 
 # UI 파일 로드
@@ -130,7 +133,7 @@ class SystemStatusThread(QThread):
             
             if response and len(response) >= 17 and response[:2] == b'AU':
                 # AU 응답 파싱 (재고 데이터)
-                stock_data = struct.unpack('>HHHHHHH', response[3:17])
+                stock_data = struct.unpack('<HHHHHHH', response[3:17])
                 return {
                     'receiving': stock_data[0],
                     'red_storage': stock_data[1],
@@ -160,9 +163,18 @@ class SystemManageTab(QWidget, Ui_Tab):
         super().__init__(parent)
         self.setupUi(self)
         
-        # 현재 로봇 위치 (0: 입고, 1: R, 2: G, 3: Y, 4: 출고)
+        # 현재 로봇 위치 (0: 입고, 1: R구역, 2: G구역, 3: Y구역)
         self.current_robot_position = 0
-        self.position_names = ["입고", "R구역", "G구역", "Y구역", "출고"]
+        self.position_names = ["입고", "R구역", "G구역", "Y구역"]
+        
+        # Robot 객체 초기화
+        self.robot = Robot("AGV_Robot")
+        self.sector_mapping = {
+            0: SectorName.RECEIVING,
+            1: SectorName.RED_STORAGE,
+            2: SectorName.GREEN_STORAGE,
+            3: SectorName.YELLOW_STORAGE
+        }
         
         # ComManager 인스턴스 (공용)
         self.com_manager = ComManager(host='localhost', port=8100)
@@ -227,7 +239,11 @@ class SystemManageTab(QWidget, Ui_Tab):
     def update_position_display(self):
         """현재 위치 표시 업데이트"""
         position_name = self.position_names[self.current_robot_position]
-        self.position_value_label.setText(position_name)
+        robot_status = self.robot.status.name if hasattr(self, 'robot') else 'UNKNOWN'
+        
+        # 위치와 상태를 함께 표시
+        display_text = f"{position_name} ({robot_status})"
+        self.position_value_label.setText(display_text)
     
     def move_robot(self, target_position):
         """로봇을 특정 위치로 이동"""
@@ -237,14 +253,24 @@ class SystemManageTab(QWidget, Ui_Tab):
             self.current_robot_position = target_position
             self.update_position_display()
             
+            # Robot 객체 상태 업데이트
+            target_sector = self.sector_mapping[target_position]
+            self.robot.status = RobotStatus.MOVING
+            self.robot.location = target_sector
+            
+            print(f"[Robot] 상태 변경: {self.robot.status.name}, 위치: {self.robot.location.name}")
+            
             # LMS 서버에 로봇 이동 명령 전송
             success = self.send_robot_move_command(target_position)
             if success:
+                self.robot.status = RobotStatus.IDLE
                 print(f"로봇 이동 성공: {self.position_names[target_position]}")
             else:
+                self.robot.status = RobotStatus.IDLE
                 print(f"로봇 이동 실패: {self.position_names[target_position]}")
                 
         except Exception as e:
+            self.robot.status = RobotStatus.IDLE
             print(f"로봇 이동 오류: {e}")
     
     def send_robot_move_command(self, position):
@@ -256,9 +282,12 @@ class SystemManageTab(QWidget, Ui_Tab):
                     print("LMS 서버에 연결할 수 없습니다")
                     return False
             
-            # RH (Return Home) 명령 사용 - 위치에 따라 성공/실패 시뮬레이션
-            success_flag = 1 if position == 0 else 0  # 입고 위치만 성공으로 시뮬레이션
-            message = b'RH' + bytes([success_flag]) + b'\x00' * 13 + b'\n'
+            # RM (Robot Move) 명령 생성 - 새로운 로봇 제어 명령
+            # 메시지 형식: RM + target_position (1 byte) + padding (13 bytes) + '\n'
+            position_byte = bytes([position])
+            message = b'RM' + position_byte + b'\x00' * 13 + b'\n'
+            
+            print(f"[Robot Move] LMS에 명령 전송: 위치 {position} ({self.position_names[position]})")
             response = self.com_manager.send_raw_message(message)
             
             if response and len(response) >= 4:
@@ -266,17 +295,17 @@ class SystemManageTab(QWidget, Ui_Tab):
                 status = response[2]
                 
                 if status == 0x00:  # SUCCESS
-                    print(f"로봇 이동 성공: {self.position_names[position]}")
+                    print(f"[Robot Move] LMS 응답: 성공")
                     return True
                 else:
-                    print(f"로봇 이동 실패: 상태 코드 {status:02x}")
+                    print(f"[Robot Move] LMS 응답: 실패 (상태 코드 {status:02x})")
                     return False
             else:
-                print("로봇 이동: 응답 없음")
+                print("[Robot Move] LMS 응답 없음 또는 잘못된 응답")
                 return False
                     
         except Exception as e:
-            print(f"로봇 이동 명령 전송 실패: {e}")
+            print(f"[Robot Move] 명령 전송 실패: {e}")
             return False
     
     def test_conveyor_motor(self):

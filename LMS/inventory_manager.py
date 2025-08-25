@@ -176,10 +176,15 @@ class InventoryManager:
                 # 4. 색상별 분류 및 저장
                 colors_received = self._classify_and_store(quantity)
                 
-                # 5. 누적 통계만 업데이트 (재고는 _classify_and_store에서 이미 처리됨)
+                # 5. 누적 통계 업데이트 (재고는 _classify_and_store에서 이미 처리됨)
                 self.cumulative_stats['total_received'] += quantity
                 
-                # 6. 입고구역 상태 복원
+                # 6. 지역별 누적 통계 업데이트
+                for color, count in colors_received.items():
+                    if count > 0:
+                        self.regional_cumulative_stats[color]['received'] += count
+                
+                # 7. 입고구역 상태 복원
                 self.sector_states[SectorName.RECEIVING] = SectorStatus.AVAILABLE
                 
                 details = f"완료 - " + ", ".join([f"{color.name}={count}" for color, count in colors_received.items()])
@@ -305,6 +310,14 @@ class InventoryManager:
                 self.sector_stocks[SectorName.SHIPPING] += total
                 self.cumulative_stats['total_shipped'] += total
                 
+                # 4. 지역별 누적 출고 통계 업데이트
+                if red_count > 0:
+                    self.regional_cumulative_stats[ItemColor.RED]['shipped'] += red_count
+                if green_count > 0:
+                    self.regional_cumulative_stats[ItemColor.GREEN]['shipped'] += green_count
+                if yellow_count > 0:
+                    self.regional_cumulative_stats[ItemColor.YELLOW]['shipped'] += yellow_count
+                
                 self.log_operation("출고 완료", f"총 {total}개 출고")
                 print(f"출고 처리 완료: 총 {total}개")
                 return True
@@ -395,3 +408,147 @@ class InventoryManager:
                 print(f"홈 위치 복귀 실패: {e}")
                 self.log_operation("홈 복귀 실패", str(e))
                 return False
+    
+    def get_regional_statistics(self):
+        """지역별 누적 통계 반환"""
+        with self.lock:
+            return {
+                'RED': {
+                    'received': self.regional_cumulative_stats[ItemColor.RED]['received'],
+                    'shipped': self.regional_cumulative_stats[ItemColor.RED]['shipped']
+                },
+                'GREEN': {
+                    'received': self.regional_cumulative_stats[ItemColor.GREEN]['received'],
+                    'shipped': self.regional_cumulative_stats[ItemColor.GREEN]['shipped']
+                },
+                'YELLOW': {
+                    'received': self.regional_cumulative_stats[ItemColor.YELLOW]['received'],
+                    'shipped': self.regional_cumulative_stats[ItemColor.YELLOW]['shipped']
+                }
+            }
+    
+    def get_extended_stock_data(self):
+        """확장된 재고 데이터 (기존 + 지역별 통계 포함)"""
+        with self.lock:
+            base_data = self.get_current_stock()
+            regional_data = self.get_regional_statistics()
+            
+            return {
+                **base_data,
+                'regional_stats': regional_data
+            }
+    
+    def clear_receiving_stock(self) -> bool:
+        """입고 구역 재고 / 누적 재고 초기화 (IR 명령어 지원)"""
+        try:
+            with self.lock:
+                prev_stock = self.sector_stocks[SectorName.RECEIVING]
+                self.sector_stocks[SectorName.RECEIVING] = 0
+                self.sector_states[SectorName.RECEIVING] = SectorStatus.AVAILABLE
+                
+                self.regional_cumulative_stats[ItemColor.RED]['received'] = 0
+                self.regional_cumulative_stats[ItemColor.GREEN]['received'] = 0
+                self.regional_cumulative_stats[ItemColor.YELLOW]['received'] = 0
+                
+                # 로그 기록
+                self.log_operation("IR 명령", f"입고 구역 초기화: {prev_stock} -> 0")
+                
+                print(f"[입고 초기화] 입고 구역 재고 {prev_stock} -> 0 초기화 완료")
+                return True
+                
+        except Exception as e:
+            print(f"입고 구역 초기화 오류: {e}")
+            return False
+    
+    def clear_storage_stock(self) -> bool:
+        """저장 구역 재고 초기화 (IS 명령어 지원)"""
+        try:
+            with self.lock:
+                # 모든 색상 저장 구역 초기화
+                prev_red = self.sector_stocks[SectorName.RED_STORAGE]
+                prev_green = self.sector_stocks[SectorName.GREEN_STORAGE]
+                prev_yellow = self.sector_stocks[SectorName.YELLOW_STORAGE]
+                
+                self.sector_stocks[SectorName.RED_STORAGE] = 0
+                self.sector_stocks[SectorName.GREEN_STORAGE] = 0
+                self.sector_stocks[SectorName.YELLOW_STORAGE] = 0
+                
+                self.sector_states[SectorName.RED_STORAGE] = SectorStatus.AVAILABLE
+                self.sector_states[SectorName.GREEN_STORAGE] = SectorStatus.AVAILABLE
+                self.sector_states[SectorName.YELLOW_STORAGE] = SectorStatus.AVAILABLE
+                
+                self.regional_cumulative_stats[ItemColor.RED]['shipped'] = 0
+                self.regional_cumulative_stats[ItemColor.GREEN]['shipped'] = 0
+                self.regional_cumulative_stats[ItemColor.YELLOW]['shipped'] = 0
+                
+                
+                # 로그 기록
+                self.log_operation("IS 명령", f"저장 구역 초기화: R({prev_red}->0), G({prev_green}->0), Y({prev_yellow}->0)")
+                
+                print(f"[저장 초기화] 저장 구역 재고 R({prev_red}->0), G({prev_green}->0), Y({prev_yellow}->0) 초기화 완료")
+                return True
+                
+        except Exception as e:
+            print(f"저장 구역 초기화 오류: {e}")
+            return False
+    
+    def clear_shipping_stock(self) -> bool:
+        """출고 구역 재고 / 누적재고 초기화 (IH 명령어 지원)"""
+        try:
+            with self.lock:
+                prev_stock = self.sector_stocks[SectorName.SHIPPING]
+                self.sector_stocks[SectorName.SHIPPING] = 0
+                self.sector_states[SectorName.SHIPPING] = SectorStatus.AVAILABLE
+                
+                # 출고 구역 누적 재고 초기화
+                self.regional_cumulative_stats[ItemColor.RED]['received'] = 0
+                self.regional_cumulative_stats[ItemColor.GREEN]['received'] = 0
+                self.regional_cumulative_stats[ItemColor.YELLOW]['received'] = 0
+                
+                # 로그 기록
+                self.log_operation("IH 명령", f"출고 구역 초기화: {prev_stock} -> 0")
+                
+                print(f"[출고 초기화] 출고 구역 재고 {prev_stock} -> 0 초기화 완료")
+                return True
+                
+        except Exception as e:
+            print(f"출고 구역 초기화 오류: {e}")
+            return False
+    
+    def clear_all_stock(self) -> bool:
+        """모든 구역 재고 초기화 (IA 명령어 지원)"""
+        try:
+            with self.lock:
+                # 모든 구역 상태 백업
+                prev_stocks = {
+                    'receiving': self.sector_stocks[SectorName.RECEIVING],
+                    'red_storage': self.sector_stocks[SectorName.RED_STORAGE],
+                    'green_storage': self.sector_stocks[SectorName.GREEN_STORAGE],
+                    'yellow_storage': self.sector_stocks[SectorName.YELLOW_STORAGE],
+                    'shipping': self.sector_stocks[SectorName.SHIPPING]
+                }
+                
+                # 모든 재고 초기화
+                self.sector_stocks[SectorName.RECEIVING] = 0
+                self.sector_stocks[SectorName.RED_STORAGE] = 0
+                self.sector_stocks[SectorName.GREEN_STORAGE] = 0
+                self.sector_stocks[SectorName.YELLOW_STORAGE] = 0
+                self.sector_stocks[SectorName.SHIPPING] = 0
+                
+                # 모든 상태 AVAILABLE로 리셋
+                for sector in self.sector_states:
+                    self.sector_states[sector] = SectorStatus.AVAILABLE
+                
+                # 로그 기록
+                log_msg = f"전체 초기화: REC({prev_stocks['receiving']}->0), R({prev_stocks['red_storage']}->0), G({prev_stocks['green_storage']}->0), Y({prev_stocks['yellow_storage']}->0), SHIP({prev_stocks['shipping']}->0)"
+                self.log_operation("IA 명령", log_msg)
+                
+                print(f"[전체 초기화] 모든 구역 재고 초기화 완료")
+                print(f"  - 입고: {prev_stocks['receiving']} -> 0")
+                print(f"  - 저장 R/G/Y: {prev_stocks['red_storage']}/{prev_stocks['green_storage']}/{prev_stocks['yellow_storage']} -> 0/0/0")
+                print(f"  - 출고: {prev_stocks['shipping']} -> 0")
+                return True
+                
+        except Exception as e:
+            print(f"전체 초기화 오류: {e}")
+            return False

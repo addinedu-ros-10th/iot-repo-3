@@ -30,6 +30,41 @@ class MotorStatus(Enum):
   ON = auto()
   OFF = auto()
 
+class RobotStatus(Enum):
+    IDLE = auto()
+    MOVING = auto()
+    OPERATING = auto()  # 물품 수령/전달 등
+
+class Robot:
+  def __init__(self, name):
+    self.name = name
+    self.status = RobotStatus.IDLE # 로봇 쉬는중
+    self.location = SectorName.RECEIVING # 초기 위치 : 입고구역
+
+  def move_to_sector(self, new_sector):
+    if self.location == new_sector:
+      print(f"[{self.name}] 이미 {new_sector.name} 구역에 있습니다.")
+      return
+
+    # (추가) 용량 체크 로직
+    # 현재 구역에서 로봇 수 감소, 새 구역에서 로봇 수 증가
+    
+    print(f"[{self.name}] {self.location.name} -> {new_sector.name} 으로 이동 시작")
+    self.operation_status = RobotStatus.MOVING
+    
+    # 실제 이동 시간/로직 시뮬레이션
+    # ...
+    
+    print(f"[{self.name}] {new_sector.name} 구역에 도착했습니다.")
+    self.location = new_sector
+    self.operation_status = RobotStatus.IDLE
+
+  def get_info(self):
+    print(f"--- 로봇 [{self.name}] 상태 정보 ---")
+    print(f"  - 현재 동작 상태: {self.operation_status.name}")
+    print(f"  - 현재 위치 구역: {self.location.name}")
+    print("-" * 25)
+
 class Motor:
   """
   하나의 모터를 나타내는 클래스.
@@ -51,6 +86,8 @@ class Motor:
   
   def __repr__(self):
     return f"Motor(name={self.name}, status={self.status.name})"
+
+
 
 '''
 # class Robot 구현

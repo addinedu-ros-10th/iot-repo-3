@@ -5,7 +5,7 @@ import struct
 from PyQt6 import uic, QtGui
 from PyQt6.QtGui import QColor, QPainter, QBrush, QPen, QFont, QPolygon, QIntValidator
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel
-from PyQt6.QtCore import Qt, QThread, pyqtSignal, QPoint
+from PyQt6.QtCore import Qt, QThread, pyqtSignal, QPoint, QTimer
 
 from stw_lib.sector_manager2 import SectorName, SectorStatus, SectorManager
 
@@ -32,6 +32,7 @@ class MainMonitorTab(QWidget, Ui_Tab):
 
         # ComManager 초기화 및 연결
         self.com_manager = ComManager(host='localhost', port=8100)
+        self.com_manager = ComManager(host='12', port=8100)
         
         # LMS 서버 연결 시도
         if self.com_manager.connect():
@@ -80,6 +81,23 @@ class MainMonitorTab(QWidget, Ui_Tab):
             self.btn_admin_ship.clicked.connect(self.handle_ship_request)
             print("출고 버튼 이벤트 연결 완료")
         
+        # Clear 버튼 이벤트 연결
+        if hasattr(self, 'btn_receive_clear'):
+            self.btn_receive_clear.clicked.connect(self.handle_clear_receive)
+            print("입고 초기화 버튼 이벤트 연결 완료")
+        
+        if hasattr(self, 'btn_store_clear'):
+            self.btn_store_clear.clicked.connect(self.handle_clear_store)
+            print("저장 초기화 버튼 이벤트 연결 완료")
+        
+        if hasattr(self, 'btn_ship_clear'):
+            self.btn_ship_clear.clicked.connect(self.handle_clear_ship)
+            print("출고 초기화 버튼 이벤트 연결 완료")
+        
+        if hasattr(self, 'btn_all_clear'):
+            self.btn_all_clear.clicked.connect(self.handle_clear_all)
+            print("전체 초기화 버튼 이벤트 연결 완료")
+        
         # 누적 데이터 업데이트 (CU 명령어 사용)
         self.update_cumulative_data()
         
@@ -102,33 +120,78 @@ class MainMonitorTab(QWidget, Ui_Tab):
     
     def update_stock_display(self, stocks):
         """재고 정보를 UI에 업데이트합니다."""
-        if len(stocks) >= 5:
-            # 지역 입고수량 업데이트 (주넉)
-            # self.receive_count_r.setText(stocks[])
+        try:
+            if len(stocks) >= 7:  # 7개 값이 모두 필요
+                # QProgressBar 업데이트 (최대값 3으로 설정)
+                if hasattr(self, 'stock_count_r'):
+                    self.stock_count_r.setMaximum(3)
+                    self.stock_count_r.setValue(min(stocks[1], 3))
+                
+                if hasattr(self, 'stock_count_g'):
+                    self.stock_count_g.setMaximum(3)
+                    self.stock_count_g.setValue(min(stocks[2], 3))
+                
+                if hasattr(self, 'stock_count_y'):
+                    self.stock_count_y.setMaximum(3)
+                    self.stock_count_y.setValue(min(stocks[3], 3))
+                
+                # 누적 재고 반영 (stock[5]=RECEIVING_TOTAL, stock[6]=SHIPPING_TOTAL)
+                if hasattr(self, 'acc_receive_count'):
+                    self.acc_receive_count.setText(str(stocks[5]))
+                
+                if hasattr(self, 'acc_ship_count'):
+                    self.acc_ship_count.setText(str(stocks[6]))
+            else:
+                print(f"재고 데이터 길이 부족: {len(stocks)} (7개 필요)")
+        except Exception as e:
+            print(f"재고 표시 업데이트 실패: {e}")
+            import traceback
+            traceback.print_exc()
+    
+    def update_regional_display(self, regional_stats):
+        """지역별 통계를 UI에 업데이트합니다."""
+        try:
+            print(f"지역별 통계 업데이트:")
+            print(f"  RED: 입고={regional_stats['RED']['received']}, 출고={regional_stats['RED']['shipped']}")
+            print(f"  GREEN: 입고={regional_stats['GREEN']['received']}, 출고={regional_stats['GREEN']['shipped']}")
+            print(f"  YELLOW: 입고={regional_stats['YELLOW']['received']}, 출고={regional_stats['YELLOW']['shipped']}")
             
-            # QProgressBar 업데이트 (최대값 3으로 설정)
-            self.stock_count_r.setMaximum(3)
-            self.stock_count_g.setMaximum(3)
-            self.stock_count_y.setMaximum(3)
+            # main_monitor.ui에 지역별 입출고 카운트 표시할 UI 요소가 있다면 업데이트
+            # 예: 우측 상단 지역 색상별 입고/출고 현황
             
-            # 현재 재고 반영 (stocks[1]=RED, stocks[2]=GREEN, stocks[3]=YELLOW)
-            self.stock_count_r.setValue(min(stocks[1], 3))
-            self.stock_count_g.setValue(min(stocks[2], 3))
-            self.stock_count_y.setValue(min(stocks[3], 3))
+            # RED 지역 통계
+            if hasattr(self, 'receive_count_r'):
+                self.receive_count_r.setText(str(regional_stats['RED']['received']))
+            if hasattr(self, 'ship_count_r'):
+                self.ship_count_r.setText(str(regional_stats['RED']['shipped']))
             
-            # 누적 재고 반영 (stock[5]=RECEIVING_TOTAL, stock[6]=SHIPPING_TOTAL)
-            self.acc_receive_count.setText(str(stocks[5]))
-            self.acc_ship_count.setText(str(stocks[6]))
+            # GREEN 지역 통계
+            if hasattr(self, 'receive_count_g'):
+                self.receive_count_g.setText(str(regional_stats['GREEN']['received']))
+            if hasattr(self, 'ship_count_g'):
+                self.ship_count_g.setText(str(regional_stats['GREEN']['shipped']))
+            
+            # YELLOW 지역 통계
+            if hasattr(self, 'receive_count_y'):
+                self.receive_count_y.setText(str(regional_stats['YELLOW']['received']))
+            if hasattr(self, 'ship_count_y'):
+                self.ship_count_y.setText(str(regional_stats['YELLOW']['shipped']))
+                
+        except Exception as e:
+            print(f"지역별 통계 표시 업데이트 실패: {e}")
+            import traceback
+            traceback.print_exc()
     
     def update_cumulative_data(self):
         """누적 데이터 업데이트"""
         # RA 명령을 통해 실제 누적 데이터 수신
         self.send_ra_command()
-        
+    
+    
     def create_ri_command(self, quantity):
         """RI (Receive Item) 명령어 생성"""
         command = b'RI'
-        receive_req = struct.pack('>H', quantity)  # 2 bytes
+        receive_req = struct.pack('<H', quantity)  # 2 bytes
         padding = b'\x00' * 12  # 나머지 12 bytes
         data = receive_req + padding
         end = b'\n'
@@ -137,7 +200,7 @@ class MainMonitorTab(QWidget, Ui_Tab):
     def create_si_command(self, red, green, yellow):
         """SI (Ship Item Request) 명령어 생성"""
         command = b'SI'
-        ship_req = struct.pack('>HHH', red, green, yellow)  # 6 bytes
+        ship_req = struct.pack('<HHH', red, green, yellow)  # 6 bytes
         padding = b'\x00' * 8  # 나머지 8 bytes
         data = ship_req + padding
         end = b'\n'
@@ -153,32 +216,98 @@ class MainMonitorTab(QWidget, Ui_Tab):
     def send_ra_command(self):
         """RA 명령 전송하여 재고 상태 요청"""
         try:
+            if not self.com_manager.is_connected:
+                if not self.com_manager.connect():
+                    print("RA 명령: LMS 서버 연결 실패")
+                    return
+            
             message = self.create_ra_command()
             response = self.com_manager.send_raw_message(message)
             if response:
                 self.parse_response(response)
+            else:
+                print("RA 명령: 응답 없음")
         except Exception as e:
             print(f"RA 명령 전송 실패: {e}")
+            import traceback
+            traceback.print_exc()
     
     def parse_response(self, response_data):
-        """LMS → GUI 응답 파싱"""
+        """LMS → GUI 응답 파싱 (AU + RU 조합 응답 처리)"""
         if len(response_data) < 4:
             return
-            
-        command = response_data[:2].decode('ascii')
-        status = response_data[2]
         
-        if status == 0x00:  # SUCCESS
-            if command == 'AU':  # All Stock Update 응답
-                self.parse_au_response(response_data[3:-1])  # 헤더와 끝 문자 제외
+        # AU + RU 조합 응답인지 확인
+        if len(response_data) > 18 and response_data[:2] == b'AU' and b'RU' in response_data:
+            self.parse_combined_au_ru_response(response_data)
         else:
-            print(f"명령 실패: {command}, 상태: {status:02x}")
+            # 단일 응답 처리
+            command = response_data[:2].decode('ascii')
+            status = response_data[2]
+            
+            if status == 0x00:  # SUCCESS
+                if command == 'AU':  # All Stock Update 응답
+                    self.parse_au_response(response_data[3:-1])  # 헤더와 끝 문자 제외
+            else:
+                print(f"명령 실패: {command}, 상태: {status:02x}")
+    
+    def parse_combined_au_ru_response(self, response_data):
+        """AU + RU 조합 응답 파싱"""
+        try:
+            # AU 응답 찾기 (18 bytes)
+            au_end = response_data.find(b'\n') + 1
+            if au_end > 0 and response_data[:2] == b'AU':
+                au_data = response_data[3:au_end-1]  # AU 헤더(3) 제외, 끝(\n) 제외
+                if len(au_data) >= 14:
+                    self.parse_au_response(au_data)
+            
+            # RU 응답 찾기
+            ru_start = response_data.find(b'RU')
+            if ru_start > 0:
+                ru_end = response_data.find(b'\n', ru_start) + 1
+                if ru_end > ru_start:
+                    ru_status = response_data[ru_start + 2]
+                    if ru_status == 0x00:  # SUCCESS
+                        ru_data = response_data[ru_start + 3:ru_end-1]  # RU 헤더(3) 제외, 끝(\n) 제외
+                        if len(ru_data) >= 12:
+                            self.parse_ru_response(ru_data)
+            
+        except Exception as e:
+            print(f"AU+RU 조합 응답 파싱 실패: {e}")
+            import traceback
+            traceback.print_exc()
+    
+    def parse_ru_response(self, data):
+        """RU 응답 데이터 파싱 (지역별 통계)"""
+        try:
+            if len(data) >= 12:
+                # RED(received:2, shipped:2) + GREEN(received:2, shipped:2) + YELLOW(received:2, shipped:2)
+                regional = struct.unpack('<HHHHHH', data[:12])
+                regional_stats = {
+                    'RED': {'received': regional[0], 'shipped': regional[1]},
+                    'GREEN': {'received': regional[2], 'shipped': regional[3]},
+                    'YELLOW': {'received': regional[4], 'shipped': regional[5]}
+                }
+                self.update_regional_display(regional_stats)
+            else:
+                print(f"RU 응답 데이터 길이 부족: {len(data)} bytes")
+        except struct.error as e:
+            print(f"RU 응답 파싱 실패: {e}")
+        except Exception as e:
+            print(f"RU 응답 처리 중 오류: {e}")
     
     def parse_au_response(self, data):
         """AU 응답 데이터 파싱"""
-        if len(data) >= 14:
-            stocks = struct.unpack('>HHHHHHH', data[:14])
-            self.update_stock_display(stocks)
+        try:
+            if len(data) >= 14:
+                stocks = struct.unpack('<HHHHHHH', data[:14])
+                self.update_stock_display(stocks)
+            else:
+                print(f"AU 응답 데이터 길이 부족: {len(data)} bytes")
+        except struct.error as e:
+            print(f"AU 응답 파싱 실패: {e}")
+        except Exception as e:
+            print(f"AU 응답 처리 중 오류: {e}")
 
     def handle_receive_request(self):
         """RI 명령어로 입고 요청을 처리"""
@@ -227,14 +356,16 @@ class MainMonitorTab(QWidget, Ui_Tab):
                 self.receive_status.setStyleSheet("color: red; font-size: 10px;")
             
             self.admin_receive.setText("0")
-            # 누적 데이터 업데이트 - 약간의 지연 후 실행
-            import threading
-            def delayed_update():
-                import time
-                time.sleep(0.5)  # 0.5초 지연
-                self.update_cumulative_data()
-            threading.Thread(target=delayed_update, daemon=True).start()
-                        
+            # 누적 데이터 업데이트 - QTimer를 사용하여 지연 실행
+            QTimer.singleShot(500, self.update_cumulative_data)
+            
+            # 입고 명령후 전체 재고 요청
+            # print(f"RA 명령 전송 시도 (물품 입고 후 업데이트)")
+            message = self.create_ra_command()
+            # print(f"생성된 메시지: {message.hex()}")
+            response = self.com_manager.send_raw_message(message)
+            # print(f"서버 응답: {response.hex() if response else 'None'}")
+            
         except ValueError as e:
             print(f"입고 요청 실패 - 입력 값 오류: {e}")
             self.receive_status.setText("실패: 입력 값 오류")
@@ -282,13 +413,16 @@ class MainMonitorTab(QWidget, Ui_Tab):
                 self.admin_ship_r.setText("0")
                 self.admin_ship_g.setText("0")
                 self.admin_ship_y.setText("0")
-                # 누적 데이터 업데이트 - 약간의 지연 후 실행
-                import threading
-                def delayed_update():
-                    import time
-                    time.sleep(0.5)  # 0.5초 지연
-                    self.update_cumulative_data()
-                threading.Thread(target=delayed_update, daemon=True).start()
+                # 누적 데이터 업데이트 - QTimer를 사용하여 안전하게 지연 실행
+                QTimer.singleShot(500, self.update_cumulative_data)
+                
+                # 입고 명령후 전체 재고 요청
+                # print(f"RA 명령 전송 시도 (물품 입고 후 업데이트)")
+                message = self.create_ra_command()
+                # print(f"생성된 메시지: {message.hex()}")
+                response = self.com_manager.send_raw_message(message)
+                # print(f"서버 응답: {response.hex() if response else 'None'}")
+
             else:
                 print("출고 요청 실패: 수량이 0개입니다")
                 self.ship_status.setText("실패: 수량 0")
@@ -297,6 +431,140 @@ class MainMonitorTab(QWidget, Ui_Tab):
         except Exception as e:
             print(f"출고 요청 실패: {e}")
             self.ship_status.setText("실패: 입력 오류")
+            self.ship_status.setStyleSheet("color: red; font-size: 10px;")
+    
+    def handle_clear_receive(self):
+        """입고 구역 누적 재고 초기화 요청"""
+        try:
+            print("입고 구역 초기화 요청 (IR 명령)")
+            
+            # IR 명령 전송
+            result = self.com_manager.send_command('IR', {})
+            
+            if result and result.get("success"):
+                print(f"IR 명령 성공: {result.get('message', '')})")
+                self.receive_status.setText("성공: 입고 구역 초기화")
+                self.receive_status.setStyleSheet("color: green; font-size: 10px;")
+                
+                # 재고 정보 업데이트
+                # QTimer.singleShot(500, self.update_cumulative_data)
+                # self.send_ra_command()
+            else:
+                error_msg = result.get('message', '알 수 없는 오류') if result else '통신 오류'
+                print(f"IR 명령 실패: {error_msg}")
+                self.receive_status.setText(f"실패: {error_msg}")
+                self.receive_status.setStyleSheet("color: red; font-size: 10px;")
+
+            # 입고구역 초기화 명령후 전체 재고 요청
+            # print(f"RA 명령 전송 시도 (물품 입고 후 업데이트)")
+            message = self.create_ra_command()
+            # print(f"생성된 메시지: {message.hex()}")
+            self.com_manager.send_raw_message(message)
+
+        except Exception as e:
+            print(f"입고 구역 초기화 실패: {e}")
+            self.receive_status.setText("실패: 오류")
+            self.receive_status.setStyleSheet("color: red; font-size: 10px;")
+    
+    def handle_clear_store(self):
+        """저장 구역 초기화 요청"""
+        try:
+            print("저장 구역 초기화 요청 (IS 명령)")
+            
+            # IS 명령 전송
+            result = self.com_manager.send_command('IS', {})
+            
+            if result and result.get("success"):
+                print(f"IS 명령 성공: {result.get('message', '')})")
+                # 저장 관련 상태 메시지 추가 (기존 UI에 없다면 콘솔로 대체)
+                print("성공: 저장 구역 초기화")
+                
+                # 재고 정보 업데이트
+                QTimer.singleShot(500, self.update_cumulative_data)
+            else:
+                error_msg = result.get('message', '알 수 없는 오류') if result else '통신 오류'
+                print(f"IS 명령 실패: {error_msg}")
+                print(f"실패: {error_msg}")
+
+            # 입고구역 초기화 명령후 전체 재고 요청
+            # print(f"RA 명령 전송 시도 (물품 입고 후 업데이트)")
+            message = self.create_ra_command()
+            # print(f"생성된 메시지: {message.hex()}")
+            self.com_manager.send_raw_message(message)
+
+                
+        except Exception as e:
+            print(f"저장 구역 초기화 실패: {e}")
+            print("실패: 오류")
+    
+    def handle_clear_ship(self):
+        """출고 구역 초기화 요청"""
+        try:
+            print("출고 구역 초기화 요청 (IH 명령)")
+            
+            # IH 명령 전송
+            result = self.com_manager.send_command('IH', {})
+            
+            if result and result.get("success"):
+                print(f"IH 명령 성공: {result.get('message', '')})")
+                self.ship_status.setText("성공: 출고 구역 초기화")
+                self.ship_status.setStyleSheet("color: green; font-size: 10px;")
+                
+                # 재고 정보 업데이트
+                QTimer.singleShot(500, self.update_cumulative_data)
+            else:
+                error_msg = result.get('message', '알 수 없는 오류') if result else '통신 오류'
+                print(f"IH 명령 실패: {error_msg}")
+                self.ship_status.setText(f"실패: {error_msg}")
+                self.ship_status.setStyleSheet("color: red; font-size: 10px;")
+                
+            # 입고구역 초기화 명령후 전체 재고 요청
+            # print(f"RA 명령 전송 시도 (물품 입고 후 업데이트)")
+            message = self.create_ra_command()
+            # print(f"생성된 메시지: {message.hex()}")
+            self.com_manager.send_raw_message(message)
+
+        except Exception as e:
+            print(f"출고 구역 초기화 실패: {e}")
+            self.ship_status.setText("실패: 오류")
+            self.ship_status.setStyleSheet("color: red; font-size: 10px;")
+    
+    def handle_clear_all(self):
+        """모든 구역 초기화 요청"""
+        try:
+            print("모든 구역 초기화 요청 (IA 명령)")
+            
+            # IA 명령 전송
+            result = self.com_manager.send_command('IA', {})
+            
+            if result and result.get("success"):
+                print(f"IA 명령 성공: {result.get('message', '')})")
+                self.receive_status.setText("성공: 전체 초기화")
+                self.receive_status.setStyleSheet("color: green; font-size: 10px;")
+                self.ship_status.setText("성공: 전체 초기화")
+                self.ship_status.setStyleSheet("color: green; font-size: 10px;")
+                
+                # 재고 정보 업데이트
+                QTimer.singleShot(500, self.update_cumulative_data)
+            else:
+                error_msg = result.get('message', '알 수 없는 오류') if result else '통신 오류'
+                print(f"IA 명령 실패: {error_msg}")
+                self.receive_status.setText(f"실패: {error_msg}")
+                self.receive_status.setStyleSheet("color: red; font-size: 10px;")
+                self.ship_status.setText(f"실패: {error_msg}")
+                self.ship_status.setStyleSheet("color: red; font-size: 10px;")
+                
+            # 입고구역 초기화 명령후 전체 재고 요청
+            # print(f"RA 명령 전송 시도 (물품 입고 후 업데이트)")
+            message = self.create_ra_command()
+            # print(f"생성된 메시지: {message.hex()}")
+            self.com_manager.send_raw_message(message)
+
+        except Exception as e:
+            print(f"모든 구역 초기화 실패: {e}")
+            self.receive_status.setText("실패: 오류")
+            self.receive_status.setStyleSheet("color: red; font-size: 10px;")
+            self.ship_status.setText("실패: 오류")
             self.ship_status.setStyleSheet("color: red; font-size: 10px;")
 
 

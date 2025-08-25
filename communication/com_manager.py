@@ -72,8 +72,8 @@ class ComManager:
       self.socket.send(message)
       print(f"Raw 메시지 전송: {message.hex()}")
       
-      # 응답 수신 (최소 4바이트: Command(2) + Status(1) + End(1))
-      response = self.socket.recv(1024)  # 충분한 크기로 수신
+      # 응답 수신 (AU + RU 조합 응답을 위해 더 큰 버퍼 사용)
+      response = self.socket.recv(2048)  # AU(18 bytes) + RU(18 bytes) = 최대 36 bytes + 여유
       if response:
         print(f"Raw 응답 수신: {response.hex()}")
         return response
@@ -101,6 +101,18 @@ class ComManager:
         msg_data = MessageProtocol.pack_rh_data(data.get('success', False))
       elif command == 'RA':
         msg_data = MessageProtocol.pack_ra_data()
+      elif command == 'RR':
+        msg_data = MessageProtocol.pack_rr_data(data.get('region_code', 0))
+      elif command == 'RS':
+        msg_data = MessageProtocol.pack_rs_data(data.get('stats_type', 0))
+      elif command == 'IR':
+        msg_data = MessageProtocol.pack_ir_data()
+      elif command == 'IS':
+        msg_data = MessageProtocol.pack_is_data()
+      elif command == 'IH':
+        msg_data = MessageProtocol.pack_ih_data()
+      elif command == 'IA':
+        msg_data = MessageProtocol.pack_ia_data()
       else:
         return {"success": False, "message": f"지원하지 않는 명령어: {command}"}
       
