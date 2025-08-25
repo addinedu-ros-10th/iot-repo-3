@@ -7,10 +7,6 @@ from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QTableWidgetItem, QPu
 from PyQt6.QtCore import Qt, QTimer
 from functools import partial
 
-# 서보모터 1개 / 스태핑모터 4개
-
-# src/base/sector_manager.py를 임포트
-# 경로가 다른 경우 sys.path.append() 등을 사용하여 경로를 맞춰주세요.
 from stw_lib.sector_manager2 import SectorManager, SectorName, MotorStatus
 
 # --- UI 파일 로드 ---
@@ -37,13 +33,6 @@ class SensorsTab(QWidget, Ui_Tab): # QWidget과 UI 폼 클래스를 상속
 
         self.healthLabel = self.findChild(QLabel, "labelHealth")
 
-        # --- 시스템 상태 주기적 업데이트 ---
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_system_health)
-        self.timer.timeout.connect(self.update_state)
-        self.timer.start(2000)
-
-                
         self.update_system_health()
         self.update_state()
 
@@ -66,15 +55,6 @@ class SensorsTab(QWidget, Ui_Tab): # QWidget과 UI 폼 클래스를 상속
                 all_motor_instances.append((sector.name, motor_name))
         print(f"발견된 전체 모터 인스턴스 (총 {len(all_motor_instances)}개): {all_motor_instances}")
         return all_motor_instances
-
-    # def _get_unique_sensors(self) -> list:
-    #     """SectorManager에서 모든 고유한 센서 목록을 가져옵니다."""
-    #     unique_sensors = set()
-    #     for sector in self.manager.sectors.values():
-    #         for sensor_name in sector.sensor_list:
-    #             unique_sensors.add(sensor_name)
-    #     print(f"발견된 고유 센서 목록: {list(unique_sensors)}")
-    #     return list(unique_sensors)
 
     def _initialize_ui(self):
         """UI 위젯과 백엔드 데이터를 매핑하고 시그널을 연결합니다."""
@@ -106,24 +86,6 @@ class SensorsTab(QWidget, Ui_Tab): # QWidget과 UI 폼 클래스를 상속
         for button in self.ui_map.values():
             button.setEnabled(False)
 
-    # def simulate_sensor_failure(self):
-    #     """센서 고장을 시뮬레이션합니다."""
-    #     normal_sensors = [s for s, status in self.sensor_statuses.items() if status == "Normal"]
-    #     if normal_sensors:
-    #         sensor_to_break = random.choice(normal_sensors)
-    #         self.sensor_statuses[sensor_to_break] = "Error"
-    #         print(f"!! 시뮬레이션: 센서 '{sensor_to_break}' 고장 발생")
-    #         self.update_system_health()
-
-    # def simulate_sensor_fix(self):
-    #     """센서 수리를 시뮬레이션합니다."""
-    #     failed_sensors = [s for s, status in self.sensor_statuses.items() if status == "Error"]
-    #     if failed_sensors:
-    #         sensor_to_fix = random.choice(failed_sensors)
-    #         self.sensor_statuses[sensor_to_fix] = "Normal"
-    #         print(f"** 시뮬레이션: 센서 '{sensor_to_fix}' 수리 완료")
-    #         self.update_system_health()
-
     def update_system_health(self):
         """센서 상태를 확인하고 HealthLabel UI를 업데이트합니다."""
         total_sensors = len(self.all_sensors)
@@ -134,16 +96,13 @@ class SensorsTab(QWidget, Ui_Tab): # QWidget과 UI 폼 클래스를 상속
         if health_ratio == 1.0:
             health_color = QColor("#2ECC71")
             health_text = "정상"
-        # elif health_ratio >= 0.5:
-        #     health_color = QColor("#F1C40F")
-        #     health_text = "WARNING"
         else:
             health_color = QColor("#E74C3C")
             health_text = "에러"
             
         print(f"시스템 상태 업데이트: 정상 센서 {normal_sensors}/{total_sensors} ({health_ratio:.0%}) -> {health_text}")
 
-        pixmap = self.create_health_circle(100, health_color, health_text, f"센서상태 : {normal_sensors}/{total_sensors}",, f"센서상태 : {normal_sensors}/{total_sensors}")
+        pixmap = self.create_health_circle(100, health_color, health_text, f"센서상태 : {normal_sensors}/{total_sensors}", f"모터상태 : 정상")
         self.healthLabel.setPixmap(pixmap)
 
     def create_health_circle(self, size: int, color: QColor, text: str, sensor_sub_text: str, motor_sub_text: str) -> QPixmap:
@@ -176,32 +135,6 @@ class SensorsTab(QWidget, Ui_Tab): # QWidget과 UI 폼 클래스를 상속
 
         painter.end()
         return pixmap
-
-    # draw_toggle_status_button 메소드와 각 구역 for문 순회를 이용해 모든 on/off 토글 스위치 그리기
-    def draw_all_buttons(self):
-        # 그리는 형식
-        # self.draw_toggle_status_button(20, 8, "Off")
-        
-        '''
-        robot_status(QFrame) 아래의 모든 모터/센서 QPushButton
-        r_status(QFrame) 아래의 모든 모터/센서 QPushButton
-        g_status(QFrame) 아래의 모든 모터/센서 QPushButton
-        y_status(QFrame) 아래의 모든 모터/센서 QPushButton
-        sh_status(QFrame) 아래의 모든 모터/센서 QPushButton
-        1. readonly로 설정 및 상태 업데이트
-        '''
-        
-        
-        # # 각 구역마다 순회
-        # for sector in self.manager.sectors.values():
-        #     # 모터가 없으면 건너뜀
-        #     if not sector.motors:
-        #         continue
-            
-        #     for sensor in sector.motors.values():
-                
-        pass
-
 
     def update_state(self):
         """모든 모터 및 센서의 UI 상태를 현재 백엔드 상태와 동기화합니다."""

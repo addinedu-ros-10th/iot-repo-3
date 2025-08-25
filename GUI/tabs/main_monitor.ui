@@ -175,9 +175,12 @@
       <rect>
        <x>70</x>
        <y>40</y>
-       <width>141</width>
+       <width>111</width>
        <height>26</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -188,9 +191,12 @@
       <rect>
        <x>70</x>
        <y>70</y>
-       <width>141</width>
+       <width>111</width>
        <height>26</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -201,9 +207,12 @@
       <rect>
        <x>70</x>
        <y>100</y>
-       <width>141</width>
+       <width>111</width>
        <height>26</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -218,6 +227,9 @@
        <height>26</height>
       </rect>
      </property>
+     <property name="text">
+      <string>0</string>
+     </property>
      <property name="readOnly">
       <bool>true</bool>
      </property>
@@ -231,6 +243,9 @@
        <height>26</height>
       </rect>
      </property>
+     <property name="text">
+      <string>0</string>
+     </property>
      <property name="readOnly">
       <bool>true</bool>
      </property>
@@ -243,6 +258,9 @@
        <width>111</width>
        <height>26</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -267,8 +285,8 @@
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>70</x>
-       <y>20</y>
+       <x>30</x>
+       <y>10</y>
        <width>111</width>
        <height>19</height>
       </rect>
@@ -277,40 +295,43 @@
       <string>물품 입고 관리</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="inut_ship_count">
+    <widget class="QLineEdit" name="admin_ship_y">
      <property name="geometry">
       <rect>
-       <x>320</x>
-       <y>110</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="input_receive_count">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>80</y>
+       <x>220</x>
+       <y>100</y>
        <width>81</width>
        <height>26</height>
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0</string>
      </property>
      <property name="readOnly">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QLineEdit" name="admin_ship_g">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>140</y>
+       <x>220</x>
+       <y>70</y>
+       <width>81</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_admin_ship">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>130</y>
        <width>121</width>
        <height>26</height>
       </rect>
@@ -319,27 +340,27 @@
       <string>실행</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="input_receive_count_2">
+    <widget class="QLineEdit" name="admin_ship_r">
      <property name="geometry">
       <rect>
-       <x>320</x>
-       <y>50</y>
+       <x>220</x>
+       <y>40</y>
        <width>81</width>
        <height>26</height>
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0</string>
      </property>
      <property name="readOnly">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QLabel" name="label_19">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>50</y>
+       <x>190</x>
+       <y>40</y>
        <width>21</width>
        <height>19</height>
       </rect>
@@ -351,8 +372,8 @@
     <widget class="QLabel" name="label_20">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>80</y>
+       <x>190</x>
+       <y>70</y>
        <width>21</width>
        <height>19</height>
       </rect>
@@ -364,21 +385,21 @@
     <widget class="QLabel" name="label_21">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>110</y>
+       <x>190</x>
+       <y>100</y>
        <width>21</width>
        <height>19</height>
       </rect>
      </property>
      <property name="text">
-      <string>B :</string>
+      <string>Y :</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_12">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>20</y>
+       <x>190</x>
+       <y>10</y>
        <width>111</width>
        <height>19</height>
       </rect>
@@ -390,7 +411,7 @@
     <widget class="Line" name="line">
      <property name="geometry">
       <rect>
-       <x>225</x>
+       <x>160</x>
        <y>20</y>
        <width>20</width>
        <height>150</height>
@@ -400,27 +421,27 @@
       <enum>Qt::Vertical</enum>
      </property>
     </widget>
-    <widget class="QLineEdit" name="input_receive_count_3">
+    <widget class="QLineEdit" name="admin_receive">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>70</y>
+       <x>50</x>
+       <y>60</y>
        <width>91</width>
        <height>26</height>
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0</string>
      </property>
      <property name="readOnly">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="btn_admin_receive">
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>130</y>
+       <x>20</x>
+       <y>120</y>
        <width>121</width>
        <height>26</height>
       </rect>
@@ -432,14 +453,92 @@
     <widget class="QLabel" name="label_17">
      <property name="geometry">
       <rect>
-       <x>50</x>
-       <y>70</y>
+       <x>10</x>
+       <y>60</y>
        <width>41</width>
        <height>19</height>
       </rect>
      </property>
      <property name="text">
       <string>입고 : </string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_3">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>20</y>
+       <width>20</width>
+       <height>150</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_18">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>10</y>
+       <width>91</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>재고 초기화</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_receive_clear">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>40</y>
+       <width>101</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>입고 초기화</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_store_clear">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>70</y>
+       <width>101</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>보관 초기화</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_ship_clear">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>100</y>
+       <width>101</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>출고 초기화</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_all_clear">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>130</y>
+       <width>101</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>전체 초기화</string>
      </property>
     </widget>
    </widget>
@@ -561,6 +660,9 @@
        <height>26</height>
       </rect>
      </property>
+     <property name="text">
+      <string>0</string>
+     </property>
      <property name="readOnly">
       <bool>true</bool>
      </property>
@@ -573,6 +675,9 @@
        <width>113</width>
        <height>26</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
