@@ -52,6 +52,7 @@ DataPacket p;
 
 void setup() {
   Serial.begin(115200);
+  Serial.println("Unloading!");
   WiFi.begin(ssid, password);   //공유기 접속 시도
   Serial.print("Wi-Fi 연결중");
   while(WiFi.status() != WL_CONNECTED)
@@ -84,7 +85,7 @@ void setup() {
   pinMode(col_s3, OUTPUT);
   pinMode(col_led, OUTPUT);
   pinMode(col_out, INPUT);
-  digitalWrite(col_led, LOW);
+  digitalWrite(col_led, HIGH);
   col_status = true;
 
   // RGB 주파수 스케일 설정
@@ -115,48 +116,64 @@ void loop() {
   unsigned long now = millis();
   int res = 0;
 
-  steppingRun(block, 60, &col_status);
-  if(col_status && (now - run_T.led_Time >= 200) && !msg_status)
-  {
-    run_T.led_Time = now; 
-    res = colorSearch(col_status); 
-    if(res != 0) 
-    { 
-      block = false; 
-      Serial.print("Color return: "); 
-      Serial.println(res); 
-      switch(res) 
-      { 
-        case 1:     //빨강 
-          Serial.println("Red Shoot!!"); 
-          strcpy(u_c, "UCR"); 
-          break; 
-        case 2:     //초록 
-          Serial.println("Green Shoot!!"); 
-          strcpy(u_c, "UCG"); 
-          break; 
-        case 3:     //노랑 
-          Serial.println("Yellow Shoot!!"); 
-          strcpy(u_c, "UCY");  
-          break; 
-        default: 
-          Serial.println("색상 인식 오류"); 
-          break; 
-      } 
-    }
-
-    sendData(u_c);
-  }
-
-//수신 부분
-  if(newDataReceived) 
+    //수신 부분
+  if(newDataReceived)
   {
     Serial.print("수신 성공: ");
     char buffer[10];
     strcpy(buffer, (const char*)latestData.value);
-    Serial.println(buffer);  // 바로 출력 가능
+    strcpy(p.value, buffer);
+    Serial.println(p.value);  // 바로 출력 가능
     newDataReceived = false;
+    //msg_status = false;
   }
+
+  
+  steppingRun(block, 60, &col_status);
+  if(strcmp(p.value, "CI") == 0)
+  {
+    Serial.println("Servo Move!!");
+    myservo.write(90);
+    delay(500);
+    myservo.write(175);
+    delay(500);
+    msg_status = false;
+  }
+  else
+  {
+    if(col_status && (now - run_T.led_Time >= 200) && !msg_status)
+    {
+      run_T.led_Time = now; 
+      res = colorSearch(col_status); 
+      if(res != 0) 
+      { 
+        block = false; 
+        Serial.print("Color return: "); 
+        Serial.println(res); 
+        switch(res) 
+        { 
+          case 1:     //빨강 
+            Serial.println("Red Shoot!!"); 
+            strcpy(u_c, "UCR"); 
+            break; 
+          case 2:     //초록 
+            Serial.println("Green Shoot!!"); 
+            strcpy(u_c, "UCG"); 
+            break; 
+          case 3:     //노랑 
+            Serial.println("Yellow Shoot!!"); 
+            strcpy(u_c, "UCY");  
+            break; 
+          default: 
+            Serial.println("색상 인식 오류"); 
+            break; 
+        } 
+      }
+
+      sendData(u_c);
+    }
+  }
+  
 }
 //_________________________________________________________
 void steppingRun(bool run, short speed, bool *col)

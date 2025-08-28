@@ -2,26 +2,31 @@
 #include <esp_now.h>
 
 
-uint8_t peerMac[6] = {0x08,0xA6,0xF7,0x21,0xAC,0xF4}; // Jeao_ESP32 MAC 00:4B:12:30:24:C0
+uint8_t peerMac[6] = {0x00,0x4B,0x12,0x30,0x24,0xC0}; // Jeao_ESP32 MAC 00:4B:12:30:24:C0
 
 const char* ssid = "AIE_509_2.4G";          //공유기 이름
 const char* password = "addinedu_class1";    //공유기 비밀번호
 
 void sendData(const char* msg);
-void moveArea(char* color, bool move);
+void moveArea(int color, bool* move, bool* col_status);
+int colorSearch(bool led);
+void sendData(const char* msg);
 
 struct RunTime {
 unsigned long led_Time;
 };
 RunTime run_T;
 
-const short col_s0 = 32, col_s1 = 33, col_s2 = 25, col_s3 = 26, col_out = 34, col_led = 2;
+const short col_s3 = 32, col_s2 = 33, col_s1 = 25, col_s0 = 26, col_out = 34, col_led = 2;
 bool col_status = false;
 const short dc_vcc = 13, dc_gnd = 12;
 
 char u_c[10] = "";
+char col_msg[][4] = {"UCR", "UCG", "UCY"};
 bool msg_status = false;
 bool move_status = false;
+int color_num = 0;
+int move_color = 0;
 
 typedef struct {
 char value[10];
@@ -42,6 +47,7 @@ DataPacket p;
 
 void setup() {
   Serial.begin(115200);
+  Serial.println("Jeao!");
   WiFi.begin(ssid, password);   //공유기 접속 시도
   Serial.print("Wi-Fi 연결중");
   while(WiFi.status() != WL_CONNECTED)
@@ -63,7 +69,7 @@ void setup() {
   pinMode(col_led, OUTPUT);
   pinMode(col_out, INPUT);
   digitalWrite(col_led, LOW);
-  col_status = true;
+  col_status = false;
 
   // RGB 주파수 스케일 설정
   digitalWrite(col_s0, HIGH);
@@ -93,7 +99,7 @@ void setup() {
 
 void loop() {
   //수신 부분
-  if(newDataReceived && !move_status)
+  if(newDataReceived)
   {
     Serial.print("수신 성공: ");
     char buffer[10];
@@ -101,33 +107,45 @@ void loop() {
     strcpy(p.value, buffer);
     Serial.println(p.value);  // 바로 출력 가능
     newDataReceived = false;
-  }
+    //msg_status = false;
 
-  if(!move_status)
-  {
-    int color_num = 0;
-    if(p.value[strlen(p.value)-1] == 'R')
+    for(int i = 0; i < 3; i++)
     {
-      Serial.println("block is RED!");
-      color_num = 1;
-      move_status = true;
+      if(strcmp(p.value, col_msg[i]) == 0 && !move_status)
+      {
+        if(p.value[strlen(p.value)-1] == 'R')
+        {
+          Serial.println("block is RED!");
+          color_num = 1;
+          move_status = true;
+          col_status = true;
+        }
+        else if(p.value[strlen(p.value)-1] == 'G')
+        {
+          Serial.println("block is GREEN!");
+          color_num = 2;
+          move_status = true;
+          col_status = true;
+        }
+        else if(p.value[strlen(p.value)-1] == 'Y')
+        {
+          Serial.println("block is YELLOW!");
+          color_num = 3;
+          move_status = true;
+          col_status = true;
+        }
+      }
     }
-    else if(p.value[-1] == 'G')
-    {
-      Serial.println("block is GREEN!");
-      color_num = 2;
-      move_status = true;
-    }
-    else if(p.value[-1] == 'Y')
-    {
-      Serial.println("block is YELLOW!");
-      color_num = 3;
-      move_status = true;
-    }
+    
   }
-
-  moveArea(p.value, move_status);
   
+  if(move_status)
+  {
+    moveArea(color_num, &move_status, &col_status);
+  }
+
+//if(move_status && color_num != 0 && p.value)
+
 }
 
 void sendData(const char* msg) {
@@ -148,11 +166,61 @@ void sendData(const char* msg) {
   }
 }
 
-void moveArea(char* color, bool move)
+void moveArea(int color, bool* move, bool* col_status)
 {
-  if(move)
+  if(move && color)
   {
-    analogWrite(dc_vcc, 150);
+    analogWrite(dc_vcc, 200);
     analogWrite(dc_gnd, 0);
+  }
+
+  if(color == colorSearch(col_status))
+  {
+    Serial.print(color);
+    Serial.print(" = ");
+    Serial.print(colorSearch(col_status));
+    Serial.println(" 일치함 / 모터 정지");
+    analogWrite(dc_vcc, 0);
+    analogWrite(dc_gnd, 0);
+
+    sendData("CI");
+    *move = false;
+    *col_status = false;
+  }
+}
+
+int colorSearch(bool col)
+  {
+  if (col)
+  {
+    //Red
+    digitalWrite(col_s2, LOW);
+    digitalWrite(col_s3, LOW);
+    long redFrequency = pulseIn(col_out, LOW, 100000);
+    // Green
+    digitalWrite(col_s2, HIGH);
+    digitalWrite(col_s3, HIGH);
+    long greenFrequency = pulseIn(col_out, LOW, 100000);
+    // Blue
+    digitalWrite(col_s2, LOW);
+    digitalWrite(col_s3, HIGH);
+    long blueFrequency = pulseIn(col_out, LOW, 100000); 
+    Serial.print("R= "); Serial.print(redFrequency); 
+    Serial.print(" G= "); Serial.print(greenFrequency); 
+    Serial.print(" B= "); Serial.println(blueFrequency); 
+    short result; 
+    if (blueFrequency < 120 && greenFrequency > 110) { 
+      result = 1; 
+    } 
+    else if (redFrequency > 120 && blueFrequency > 110) { 
+      result = 2; 
+    } 
+    else if (blueFrequency > 88/*redFrequency < 100 && greenFrequency < 100*/) { 
+      result = 3; 
+    } 
+    else { 
+      result = 0; 
+    } 
+    return result;
   }
 }
