@@ -76,7 +76,7 @@ https://github.com/user-attachments/assets/92bd8b72-53b8-416f-a4d1-330655e72694
 |개발 환경|![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu)  ![Arduino](https://img.shields.io/badge/-Arduino-00979D?logo=Arduino) ![Fusion360](https://img.shields.io/badge/Fusion360-1D91D0?style=flat-square&logo=autodesk)|
 |개발 툴| ![PyQt](https://img.shields.io/badge/PyQt-41CD52?logo=qt&logoColor=white) |
 |개발 언어|![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=yellow) ![C++](https://img.shields.io/badge/C++-00599C?logo=c%2B%2B&logoColor=white) ![SQL](https://img.shields.io/badge/SQL-blue) |
-|협업 도구|![Jira](https://img.shields.io/badge/Jira-0052CC?logo=jira&logoColor=white) ![Confluence](https://img.shields.io/badge/Confluence-172B4D?logo=confluence&logoColor=white) ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white) (slack)|
+|협업 도구|![Jira](https://img.shields.io/badge/Jira-0052CC?logo=jira&logoColor=white) ![Confluence](https://img.shields.io/badge/Confluence-172B4D?logo=confluence&logoColor=white) ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white) ![Slack](https://img.shields.io/badge/Slack-Join%20%23vineyard-purple?logo=Slack)|
 |데이터베이스|![MySQL](https://img.shields.io/badge/Mysql-4479A1.svg?logo=mysql&logoColor=white)
 |통신|![TCP](https://img.shields.io/badge/TCP-004880?logo=cisco&logoColor=white) ![](https://img.shields.io/badge/Serial-000000)
 
