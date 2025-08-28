@@ -86,13 +86,15 @@ https://github.com/user-attachments/assets/92bd8b72-53b8-416f-a4d1-330655e72694
 ### 박장호 (팀장)
 - SW / HW Architecture 설계 및 구상
 - Jira 개발일정 관리 | Confluence 개발문서 관리
+- 시스템 통합 (System Integration) 계획 및 구현
+- 단위 / 통합 테스트 (Unit / Integration Test)
 
 ### 김진수
 - Storage Box 하드웨어 설계
 - Storage Box - 서버 간 시리얼(Serial)인터페이스 구현 및 연동
 
 ### 정광민
-- AGV System Upper Esp32 - Down Esp32 통합
+- AGV System Upper Esp32 - Down Esp32 통합 및 기능 구현
 - AGV - 서버 시리얼(Serial)인터페이스 구현 및 연동
 - AGV 하드웨어 설계 및 / 주요 시스템 3D 기구설계 및 출력
 
