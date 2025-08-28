@@ -71,8 +71,6 @@ https://github.com/user-attachments/assets/92bd8b72-53b8-416f-a4d1-330655e72694
 <img width="572" height="581" alt="image" src="https://github.com/user-attachments/assets/06ae70a6-cc56-46a1-8384-f98288c01b16" />
 
 ## 6. 기술 스택
-https://img.shields.io/badge/Fusion 360-Model-1D91D0?style=flat-square&logo=autodesk
-## 6. 기술 스택
 |분류|기술요소|
 |---|-------|
 |개발 환경|![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu)  ![Arduino](https://img.shields.io/badge/-Arduino-00979D?logo=Arduino) ![Fusion360](https://img.shields.io/badge/Fusion360-1D91D0?style=flat-square&logo=autodesk)|
