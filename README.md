@@ -82,3 +82,20 @@ https://github.com/user-attachments/assets/92bd8b72-53b8-416f-a4d1-330655e72694
 
 
 ## 7. 팀원 소개
+
+### 박장호 (팀장)
+- Jira 개발일정 관리 및 Confluence 개발문서 관리
+
+### 김진수
+- Storage Box 하드웨어 설계
+- Storage Box - 서버 간 시리얼(Serial)인터페이스 구현 및 연동
+
+### 정광민
+- AGV System Esp32 통합 및 AGV - 서버 시리얼(Serial)인터페이스 구현 및 연동
+- AGV 하드웨어 설계 및 / 주요 시스템 3D 기구설계 및 출력
+
+### 박재오
+- Admin GUI 설계 및 구현
+- Admin GUI - 서버 간 소켓(TCP)인터페이스 구현 및 연동
+- 서버 라이브러리 패키지 및 기초기능 구현
+- 입고/출고/로봇 테스트 Senario SD (Sequance Diagram) 구현
