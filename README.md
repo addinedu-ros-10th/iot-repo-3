@@ -26,6 +26,7 @@
 ### Storage Box
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/3271a645-43ec-4202-b43d-f13b1806b0d4" />
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/d697fefb-ee3c-44d6-aee4-9697b7f34ee3" />
+<img width="989" height="571" alt="SB" src="https://github.com/user-attachments/assets/d84ffc09-7db1-452f-8917-1be656a0be50" />
 
 
 
