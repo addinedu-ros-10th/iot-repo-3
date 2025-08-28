@@ -75,9 +75,8 @@ https://img.shields.io/badge/Fusion 360-Model-1D91D0?style=flat-square&logo=auto
 ## 6. 기술 스택
 |분류|기술요소|
 |---|-------|
-|개발 환경|![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu) |
+|개발 환경|![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu) ![PyQt](https://img.shields.io/badge/PyQt-41CD52?logo=qt&logoColor=white) ![Arduino](https://img.shields.io/badge/-Arduino-00979D?logo=Arduino) ![Fusion360](https://img.shields.io/badge/Fusion360-1D91D0?style=flat-square&logo=autodesk)|
 |개발 언어|![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=yellow) ![C++](https://img.shields.io/badge/C++-00599C?logo=c%2B%2B&logoColor=white)|
-|개발 툴|![PyQt](https://img.shields.io/badge/PyQt-41CD52?logo=qt&logoColor=white) ![Arduino](https://img.shields.io/badge/-Arduino-00979D?logo=Arduino) ![Fusion360](https://img.shields.io/badge/Fusion360-1D91D0?style=flat-square&logo=autodesk)
 |협업 도구|![Jira](https://img.shields.io/badge/Jira-0052CC?logo=jira&logoColor=white) ![Confluence](https://img.shields.io/badge/Confluence-172B4D?logo=confluence&logoColor=white) ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)|
 |데이터베이스|![MySQL](https://img.shields.io/badge/Mysql-4479A1.svg?logo=mysql&logoColor=white)
 |통신|![TCP](https://img.shields.io/badge/TCP-004880?logo=cisco&logoColor=white) ![](https://img.shields.io/badge/Serial-000000)
