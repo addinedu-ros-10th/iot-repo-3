@@ -50,8 +50,6 @@
 1. 물품 입고 시나리오
 <img width="768" height="1076" alt="image" src="https://github.com/user-attachments/assets/6b03165d-8b6f-418e-a4db-5e379d48610e" />
 
-2. (물품 출고 시나리오, 로봇 수동제어 시나리오)
-
 
 ## 5. 일정 관리
 <img width="572" height="581" alt="image" src="https://github.com/user-attachments/assets/06ae70a6-cc56-46a1-8384-f98288c01b16" />
