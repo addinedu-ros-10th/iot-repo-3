@@ -26,7 +26,7 @@
 ### Storage Box
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/3271a645-43ec-4202-b43d-f13b1806b0d4" />
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/d697fefb-ee3c-44d6-aee4-9697b7f34ee3" />
-<img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/74a2ce31-cd0d-4dab-ad0e-101386970656" />
+
 
 ### GUI
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/db41ef9b-2500-4ca4-9b37-3b4eb3b8df6b" />
