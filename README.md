@@ -9,6 +9,8 @@
 ## Contents (목차)
 1. 주제 선정 배경
 2. Overview
+3. 프로젝트 결과 (발표자료)
+4. 시스템 설계
 
 ### 1. 주제 선정 배경
 - 기존의 물류 관리 시스템(WMS)은 일반적으로 입고 -> 재고관리 -> 피킹 -> 출고 과정으로 이루어지며, 대부분의 컨베이어 벨트 중심의 자동화 설비는 설치 규모와 설치 비용이 높고 공간 활용성이 떨어진다는 문제점이 있음
@@ -21,3 +23,6 @@
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/74a2ce31-cd0d-4dab-ad0e-101386970656" />
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/db41ef9b-2500-4ca4-9b37-3b4eb3b8df6b" />
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/f3a4ca79-6a66-421e-a267-9dc092f5465b" />
+
+### 3. 프로젝트 결과 (발표자료)
+- 📝 [IoT 기반 자동 분류 로봇 시스템](https://docs.google.com/presentation/d/1yZfHWohHNP0JpMduovjOnuqC1bhI-YAt/edit?slide=id.p1#slide=id.p1)
