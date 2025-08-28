@@ -84,7 +84,8 @@ https://github.com/user-attachments/assets/92bd8b72-53b8-416f-a4d1-330655e72694
 ## 7. 팀원 소개
 
 ### 박장호 (팀장)
-- Jira 개발일정 관리 및 Confluence 개발문서 관리
+- SW / HW Architecture 설계 및 구상
+- Jira 개발일정 관리 | Confluence 개발문서 관리
 
 ### 김진수
 - Storage Box 하드웨어 설계
