@@ -20,12 +20,13 @@
 - 이에 본 프로젝트에서는 IoT 기반의 소형 자동 물품 분류 로봇 시스템을 구현하여 적은 설치 규모, 비용과 한정된 공간에서도 효율적인 물류 관리가 가능한 간소화된 물류 자동화 모델을 제시하고자 합니다.
 
 ## 2.Overview
+### AGV
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/98c8e666-eb7f-4064-9199-f82ad66b2d83" />
+### Storage Box
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/3271a645-43ec-4202-b43d-f13b1806b0d4" />
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/d697fefb-ee3c-44d6-aee4-9697b7f34ee3" />
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/74a2ce31-cd0d-4dab-ad0e-101386970656" />
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/db41ef9b-2500-4ca4-9b37-3b4eb3b8df6b" />
-<img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/f3a4ca79-6a66-421e-a267-9dc092f5465b" />
 
 ## 3. 프로젝트 결과 (발표자료)
 - 📝 [IoT 기반 자동 분류 로봇 시스템](https://docs.google.com/presentation/d/1yZfHWohHNP0JpMduovjOnuqC1bhI-YAt/edit?slide=id.p1#slide=id.p1)
