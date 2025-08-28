@@ -11,6 +11,9 @@
 2. Overview
 3. 프로젝트 결과 (발표자료)
 4. 시스템 설계
+5. 일정 관리
+6. 기술 스택
+7. 팀원 소개
 
 ## 1. 주제 선정 배경
 - 기존의 물류 관리 시스템(WMS)은 일반적으로 입고 -> 재고관리 -> 피킹 -> 출고 과정으로 이루어지며, 대부분의 컨베이어 벨트 중심의 자동화 설비는 설치 규모와 설치 비용이 높고 공간 활용성이 떨어진다는 문제점이 있음
@@ -36,3 +39,20 @@
 ### 4-2. SW Architecture
 <img width="691" height="565" alt="image" src="https://github.com/user-attachments/assets/2cdb16be-606f-4a37-bd10-3029f00ae9eb" />
 
+### 4-3. 기구 설계
+- (설계도, 3D프린터 부품 설계자료 등)
+
+### 4-4. Senario SD (Sequance Diagram)
+
+1. 물품 입고 시나리오
+<img width="768" height="1076" alt="image" src="https://github.com/user-attachments/assets/6b03165d-8b6f-418e-a4db-5e379d48610e" />
+
+2. (물품 출고 시나리오, 로봇 수동제어 시나리오)
+
+
+## 5. 일정 관리
+<img width="572" height="581" alt="image" src="https://github.com/user-attachments/assets/06ae70a6-cc56-46a1-8384-f98288c01b16" />
+
+## 6. 기술 스택
+
+## 7. 팀원 소개
