@@ -30,6 +30,7 @@
 
 ### GUI
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/db41ef9b-2500-4ca4-9b37-3b4eb3b8df6b" />
+<img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/f3a4ca79-6a66-421e-a267-9dc092f5465b" />
 
 ## 3. 프로젝트 결과 (발표자료)
 - 📝 [IoT 기반 자동 분류 로봇 시스템](https://docs.google.com/presentation/d/1yZfHWohHNP0JpMduovjOnuqC1bhI-YAt/edit?slide=id.p1#slide=id.p1)
