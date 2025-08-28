@@ -24,7 +24,8 @@
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/98c8e666-eb7f-4064-9199-f82ad66b2d83" />
 
 ### Storage Box
-<img width="640" height="480" alt="image" src="https://github.com/user-attachments/assets/3271a645-43ec-4202-b43d-f13b1806b0d4" />
+
+<img width="640" height="480" alt="SB1" src="https://github.com/user-attachments/assets/c915bed7-0c4a-4470-a217-42a58e330a3b" />
 <img width="640" height="480" alt="SB" src="https://github.com/user-attachments/assets/d84ffc09-7db1-452f-8917-1be656a0be50" />
 
 
