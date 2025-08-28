@@ -35,12 +35,15 @@
 ### 4-1. HW Architecture
 <img width="691" height="417" alt="image" src="https://github.com/user-attachments/assets/f433d78d-95d9-4155-823f-cb9a9227a1e7" />
 
-
 ### 4-2. SW Architecture
 <img width="691" height="565" alt="image" src="https://github.com/user-attachments/assets/2cdb16be-606f-4a37-bd10-3029f00ae9eb" />
 
 ### 4-3. 기구 설계
 - (설계도, 3D프린터 부품 설계자료 등)
+
+### 4-4. Storage Box 물품 입고 감지 FlowChart
+- <img width="500" height="800" alt="image" src="https://github.com/user-attachments/assets/d668feee-f542-42cb-a945-4f5c4c622504" />
+
 
 ### 4-4. Senario SD (Sequance Diagram)
 
