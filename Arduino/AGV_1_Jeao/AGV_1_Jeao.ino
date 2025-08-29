@@ -37,7 +37,7 @@ volatile bool newDataReceived = false;
 
   //받은 데이터를 자동 호출 함수(info: 송신자 Mac, incomingData: 전송된 데이터, len: 데이터 길이)
 void onRecv(const esp_now_recv_info_t *info, const uint8_t *incomingData, int len){
-  if(len == sizeof(DataPacket)){
+  if(len <= sizeof(DataPacket)){
     memcpy((void*)&latestData, (const void*)incomingData, sizeof(DataPacket));
     newDataReceived = true;
   }
@@ -95,6 +95,7 @@ void setup() {
   esp_now_add_peer(&peer);
     // 수신 콜백 등록
   esp_now_register_recv_cb(onRecv);
+  Serial.println("Ready");
 }
 
 void loop() {
@@ -109,42 +110,66 @@ void loop() {
     newDataReceived = false;
     //msg_status = false;
 
-    for(int i = 0; i < 3; i++)
+    if(strncmp(p.value, "UC",2) == 0)
     {
-      if(strcmp(p.value, col_msg[i]) == 0 && !move_status)
+      Serial.println("UC OK!");
+      if(strcmp(p.value, "UCH") == 0)
       {
-        if(p.value[strlen(p.value)-1] == 'R')
+        move_status = true;
+        col_status = true;
+        msg_status = false;
+        Serial.println("Come Back Home!");
+      }
+      else
+      {
+        for(int i = 0; i < 3; i++)
         {
-          Serial.println("block is RED!");
-          color_num = 1;
-          move_status = true;
-          col_status = true;
-        }
-        else if(p.value[strlen(p.value)-1] == 'G')
-        {
-          Serial.println("block is GREEN!");
-          color_num = 2;
-          move_status = true;
-          col_status = true;
-        }
-        else if(p.value[strlen(p.value)-1] == 'Y')
-        {
-          Serial.println("block is YELLOW!");
-          color_num = 3;
-          move_status = true;
-          col_status = true;
+          if(strcmp(p.value, col_msg[i]) == 0 && !move_status)
+          {
+            if(p.value[strlen(p.value)-1] == 'R')
+            {
+              Serial.println("block is RED!");
+              color_num = 1;
+              move_status = true;
+              col_status = true;
+            }
+            else if(p.value[strlen(p.value)-1] == 'G')
+            {
+              Serial.println("block is GREEN!");
+              color_num = 2;
+              move_status = true;
+              col_status = true;
+            }
+            else if(p.value[strlen(p.value)-1] == 'Y')
+            {
+              Serial.println("block is YELLOW!");
+              color_num = 3;
+              move_status = true;
+              col_status = true;
+            }
+          }
         }
       }
+      
+    }
+    else if (strncmp(p.value, "RM",2) == 0)
+    {
+      Serial.println("Robot Manual Mode");
     }
     
   }
   
-  if(move_status)
+  if(move_status && (strncmp(p.value, "UC",2) == 0))
   {
-    moveArea(color_num, &move_status, &col_status);
+    if (strcmp(p.value, "UCH") == 0)
+    {
+      moveArea(4, &move_status, &col_status);
+    }
+    else
+    {
+      moveArea(color_num, &move_status, &col_status);
+    }
   }
-
-//if(move_status && color_num != 0 && p.value)
 
 }
 
@@ -173,19 +198,29 @@ void moveArea(int color, bool* move, bool* col_status)
     analogWrite(dc_vcc, 200);
     analogWrite(dc_gnd, 0);
   }
+  else 
+  {
+    analogWrite(dc_vcc, 0);
+    analogWrite(dc_gnd, 200);
+  }
 
   if(color == colorSearch(col_status))
   {
     Serial.print(color);
-    Serial.print(" = ");
-    Serial.print(colorSearch(col_status));
     Serial.println(" 일치함 / 모터 정지");
+    if (color != 4)
+    {
+      sendData("CI");
+    }
+    else
+    {
+      Serial.println("Success! Come Back Home!");
+    }
     analogWrite(dc_vcc, 0);
     analogWrite(dc_gnd, 0);
-
-    sendData("CI");
     *move = false;
     *col_status = false;
+    
   }
 }
 
@@ -205,19 +240,27 @@ int colorSearch(bool col)
     digitalWrite(col_s2, LOW);
     digitalWrite(col_s3, HIGH);
     long blueFrequency = pulseIn(col_out, LOW, 100000); 
+    
     Serial.print("R= "); Serial.print(redFrequency); 
     Serial.print(" G= "); Serial.print(greenFrequency); 
     Serial.print(" B= "); Serial.println(blueFrequency); 
     short result; 
+
     if (blueFrequency < 120 && greenFrequency > 110) { 
       result = 1; 
     } 
     else if (redFrequency > 120 && blueFrequency > 110) { 
       result = 2; 
     } 
-    else if (blueFrequency > 88/*redFrequency < 100 && greenFrequency < 100*/) { 
-      result = 3; 
-    } 
+    else if (blueFrequency > 88 &&redFrequency < 100 && greenFrequency < 100) { 
+      result = 3;
+    }
+    else if(redFrequency > 120 && greenFrequency > 110 && blueFrequency > 110)
+    {
+      Serial.println("???????");
+      result = 4;
+      delay(1000);
+    }
     else { 
       result = 0; 
     } 

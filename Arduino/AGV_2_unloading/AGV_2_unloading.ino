@@ -11,6 +11,7 @@ const char* password = "addinedu_class1";    //공유기 비밀번호
 
 const char* host = "192.168.0.100"; // Python 서버 PC IP
 const uint16_t port = 8100;
+//WiFiClient client;
 
 void steppingRun(bool run, short speed);
 int colorSearch(bool led);
@@ -18,6 +19,7 @@ void sendData(const char* msg);
 
 struct RunTime {
 unsigned long led_Time;
+unsigned long block_Time;
 };
 
 RunTime run_T;
@@ -31,16 +33,19 @@ int step_index = 0;
 short angle = 175;
 bool col_status = false;
 bool block = true;
+bool step_status = true;
 char u_c[10] = "";
 bool msg_status = false;
 
 typedef struct {
 char value[10];
+//char value2[10];
 } DataPacket;
 
 volatile DataPacket latestData;
 volatile bool newDataReceived = false;
 
+  // Jeao에서 데이터 수신 골백
 void onRecv(const esp_now_recv_info_t *info, const uint8_t *incomingData, int len){
   if(len == sizeof(DataPacket)){
     memcpy((void*)&latestData, (const void*)incomingData, sizeof(DataPacket));
@@ -92,9 +97,9 @@ void setup() {
   digitalWrite(col_s0, HIGH);
   digitalWrite(col_s1, LOW);
   
-  //컬러센서 LED 시간 초기화
+  //시간 초기화
   run_T.led_Time = 0;
-  delay(1000);
+  run_T.block_Time = 0;
   
   WiFi.mode(WIFI_STA);
   if(esp_now_init() != ESP_OK)
@@ -116,7 +121,7 @@ void loop() {
   unsigned long now = millis();
   int res = 0;
 
-    //수신 부분
+    //Jeao 수신 부분
   if(newDataReceived)
   {
     Serial.print("수신 성공: ");
@@ -128,18 +133,26 @@ void loop() {
     //msg_status = false;
   }
 
-  
-  steppingRun(block, 60, &col_status);
-  if(strcmp(p.value, "CI") == 0)
+  if(block && !step_status && !msg_status)
+  {
+    run_T.block_Time = now;
+    step_status = true;
+  }
+
+  if(strncmp(p.value, "CI",2) == 0)
   {
     Serial.println("Servo Move!!");
-    myservo.write(90);
-    delay(500);
+    myservo.write(70);
+    delay(1000);
     myservo.write(175);
-    delay(500);
+    delay(100);
     msg_status = false;
+    step_status =  true;
+    col_status = true;
+    run_T.block_Time = now;
+    strcpy(p.value, "");
   }
-  else
+  else if((now - run_T.block_Time <= 10000) && step_status)
   {
     if(col_status && (now - run_T.led_Time >= 200) && !msg_status)
     {
@@ -147,7 +160,7 @@ void loop() {
       res = colorSearch(col_status); 
       if(res != 0) 
       { 
-        block = false; 
+        step_status = false; 
         Serial.print("Color return: "); 
         Serial.println(res); 
         switch(res) 
@@ -168,14 +181,31 @@ void loop() {
             Serial.println("색상 인식 오류"); 
             break; 
         } 
+        run_T.block_Time = now;
+        block = true;
+        col_status = false;
       }
 
       sendData(u_c);
+      strcpy(u_c, "");
     }
   }
+  else if((now - run_T.block_Time >= 10000) && step_status && !msg_status)
+  {
+    step_status = false;
+    block = false;
+    Serial.println("None Block, ALL Stop!!");
+    sendData("UCH");
+    msg_status = true;
+  }
+  //else if(strncmp(p.value, "UCH",2) == 0)
+  
+
+  steppingRun(step_status, 60, &col_status);
   
 }
-//_________________________________________________________
+
+//________________//////////////////////////////////____________________
 void steppingRun(bool run, short speed, bool *col)
 {
   speed = map(speed, 0, 100, 1500, 50);
@@ -235,6 +265,7 @@ int colorSearch(bool col)
   }
 }
 
+  // Jeao ESP32 데이터 전송 함수(메시지 전송)
 void sendData(const char* msg) {
   if (strlen(msg) != 0)
   {
@@ -247,6 +278,7 @@ void sendData(const char* msg) {
     if(result == ESP_OK) {
       Serial.println("송신 성공: " + String(p.value));
       msg_status = true;
+      strcpy(p.value, "");
     } else {
       Serial.println("송신 실패");
     }
