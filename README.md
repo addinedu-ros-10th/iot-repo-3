@@ -23,16 +23,10 @@
 ### AGV
 <img width="433" height="256" alt="image" src="https://github.com/user-attachments/assets/98c8e666-eb7f-4064-9199-f82ad66b2d83" />
 
-R_00
+
 https://github.com/user-attachments/assets/2e5e29ae-b900-4993-84ef-77cf0b37603d
 
-R_01
 https://github.com/user-attachments/assets/9336c4a7-ba2e-4948-97ef-e3bf0c9626a4
-
-G_00
-https://github.com/user-attachments/assets/d50b38fa-6dff-4903-8865-1be0067c37be
-
-G_01
 
 
 ### Storage Box
